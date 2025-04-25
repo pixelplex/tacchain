@@ -32,16 +32,9 @@ docker build . -t tacchaind:latest # build image
 docker run --rm -it tacchaind:latest tacchaind --help # example binary usage
 ```
 
-### Block Explorer
-
-- Prerequisites:
-  - Docker
-
-A guide for setting up a [BigDipper](https://bigdipper.live/) Block Explorer can be found at [./contrib/block-explorer-big-dipper](./contrib/block-explorer-big-dipper/README.md)
-
 ### Learn more
 
 - [Cosmos SDK docs](https://docs.cosmos.network)
 - [CosmWasm docs](https://docs.cosmwasm.com/)
-- [Ethermint docs](https://docs.ethermint.zone/)
+- [CosmosEVM docs](https://evm.cosmos.network/)
 
