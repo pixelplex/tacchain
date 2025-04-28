@@ -281,9 +281,10 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.50.13-0.20250319183239-53dea340efc7
 
 	// replace cosmos evm with our fork that uses geth v1.13.15
-	github.com/cosmos/evm => github.com/TacBuild/evm v0.0.0-20250428082603-fc6ee9a8d114
+	github.com/cosmos/evm => github.com/TacBuild/evm v0.0.0-20250428123156-38133c5e508a
 
 	// use Cosmos geth fork
+	// replace with our fork using geth v1.13.15
 	github.com/ethereum/go-ethereum => github.com/TacBuild/go-ethereum v0.0.0-20250428082551-b4f5a8f8420a
 
 	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq
