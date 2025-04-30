@@ -221,7 +221,7 @@ func waitForNewBlock(s *TacchainTestSuite, stderr io.ReadCloser) {
 			s.T().Fatalf("Chain failed to produce new block after %d attempts", maxAttempts)
 		}
 
-		time.Sleep(3 * time.Second)
+		time.Sleep(2 * time.Second)
 		s.T().Logf("Waiting for new block (attempt %d/%d)", attempt, maxAttempts)
 	}
 }

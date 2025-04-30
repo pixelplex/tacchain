@@ -206,6 +206,8 @@ func (s *TacchainTestSuite) TestFeemarketParams() {
 	txHash = parseField(output, "txhash")
 	require.NotEmpty(s.T(), txHash, "Transaction hash should not be empty")
 
+	// wait for two blocks to ensure the proposal is processed, as it some times fails non-deterministically
+	waitForNewBlock(s, nil)
 	waitForNewBlock(s, nil)
 
 	output, err = ExecuteCommand(ctx, params, "q", "feemarket", "params")

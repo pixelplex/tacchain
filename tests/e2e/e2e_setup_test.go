@@ -71,8 +71,8 @@ func (s *TacchainTestSuite) startChain() error {
 		return fmt.Errorf("failed to start chain: %v", err)
 	}
 
-	s.T().Log("Waiting 3 seconds for chain to initialize...")
-	time.Sleep(3 * time.Second)
+	s.T().Log("Waiting 2 seconds for chain to initialize...")
+	time.Sleep(2 * time.Second)
 
 	s.T().Log("Waiting for chain to start producing blocks...")
 	waitForNewBlock(s, stderr)
