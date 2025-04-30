@@ -3,11 +3,13 @@
 # environment variables
 TACCHAIND=${TACCHAIND:-$(which tacchaind)}
 DENOM=${DENOM:-utac}
-CHAIN_ID=${CHAIN_ID:-tacchain_2390-1}
+CHAIN_ID=${CHAIN_ID:-tacchain_2391-1}
 KEYRING_BACKEND=${KEYRING_BACKEND:-test}
 HOMEDIR=${HOMEDIR:-$HOME/.tacchaind}
 INITIAL_BALANCE=${INITIAL_BALANCE:-2000000000000000000$DENOM}
 INITIAL_STAKE=${INITIAL_STAKE:-1000000000000000000$DENOM}
+BLOCK_TIME_SECONDS=${BLOCK_TIME_SECONDS:-4}
+MAX_GAS=${MAX_GAS:-90000000}
 RPC_PORT=${RPC_PORT:-26657}
 P2P_PORT=${P2P_PORT:-26656}
 GRPC_PORT=${GRPC_PORT:-9090}
@@ -19,6 +21,7 @@ METRICS_PORT=${METRICS_PORT:-6065}
 PROMETHEUS_PORT=${PROMETHEUS_PORT:-26660}
 PPROF_PORT=${PPROF_PORT:-6060}
 PROXY_PORT=${PROXY_PORT:-26658}
+NODE_MONIKER=${NODE_MONIKER:-$(hostname)}
 
 # prompt user for confirmation before cleanup
 read -p "This will remove all existing data in $HOMEDIR. Do you want to proceed? (y/n): " confirm
@@ -36,7 +39,7 @@ $TACCHAIND config set client keyring-backend $KEYRING_BACKEND
 $TACCHAIND config set client output json
 
 # init genesis file
-$TACCHAIND init test --chain-id $CHAIN_ID --default-denom $DENOM --home $HOMEDIR
+$TACCHAIND init $NODE_MONIKER --chain-id $CHAIN_ID --default-denom $DENOM --home $HOMEDIR
 
 # setup and add validator to genesis
 $TACCHAIND keys add validator --keyring-backend $KEYRING_BACKEND --home $HOMEDIR
@@ -59,7 +62,7 @@ sed -i.bak "s/\"denom\": \"atest\"/\"denom\": \"$DENOM\"/g" $HOMEDIR/config/gene
 sed -i.bak "s/\"evm_denom\": \"atest\"/\"evm_denom\": \"$DENOM\"/g" $HOMEDIR/config/genesis.json
 
 # set max gas which is required for evm txs
-sed -i.bak "s/\"max_gas\": \"-1\"/\"max_gas\": \"20000000\"/g" $HOMEDIR/config/genesis.json
+sed -i.bak "s/\"max_gas\": \"-1\"/\"max_gas\": \"$MAX_GAS\"/g" $HOMEDIR/config/genesis.json
 
 # enable evm eip-3855
 sed -i.bak "s/\"extra_eips\": \[\]/\"extra_eips\": \[\"3855\"\]/g" $HOMEDIR/config/genesis.json
@@ -74,7 +77,16 @@ sed -i.bak "s/\"native_precompiles\": \[\]/\"native_precompiles\": \[\"0xD494966
 sed -i.bak "s/\"token_pairs\": \[\]/\"token_pairs\": \[{\"contract_owner\":1,\"erc20_address\":\"0xD4949664cD82660AaE99bEdc034a0deA8A0bd517\",\"denom\":\"$DENOM\",\"enabled\":true}\]/g" $HOMEDIR/config/genesis.json
 
 # set block time to 3s
-sed -i.bak "s/timeout_commit = \"5s\"/timeout_commit = \"3s\"/g" $HOMEDIR/config/config.toml
+sed -i.bak "s/timeout_commit = \"5s\"/timeout_commit = \"${BLOCK_TIME_SECONDS}s\"/g" $HOMEDIR/config/config.toml
+
+# update blocks per year to match our block time
+BLOCKS_PER_YEAR=$((365*24*60*60 / $BLOCK_TIME_SECONDS))
+sed -i.bak "s/\"blocks_per_year\": \"6311520\"/\"blocks_per_year\": \"$BLOCKS_PER_YEAR\"/g" $HOMEDIR/config/genesis.json
+
+# set inflation
+sed -i.bak "s/\"inflation_max\": \"0.200000000000000000\"/\"inflation_max\": \"0.07\"/g" $HOMEDIR/config/genesis.json
+sed -i.bak "s/\"inflation_min\": \"0.070000000000000000\"/\"inflation_min\": \"0.02\"/g" $HOMEDIR/config/genesis.json
+sed -i.bak "s/\"goal_bonded\": \"0.670000000000000000\"/\"goal_bonded\": \"0.7\"/g" $HOMEDIR/config/genesis.json
 
 # reduce proposal time
 sed -i.bak "s/\"voting_period\": \"172800s\"/\"voting_period\": \"900s\"/g" $HOMEDIR/config/genesis.json
@@ -85,9 +97,6 @@ sed -i.bak "s/enable = false/enable = true/g" $HOMEDIR/config/app.toml
 
 # enable rpc cors
 sed -i.bak "s/cors_allowed_origins = \[\]/cors_allowed_origins = \[\"*\"\]/g" $HOMEDIR/config/config.toml
-
-# update blocks per year to match 3s block time
-sed -i.bak "s/\"blocks_per_year\": \"6311520\"/\"blocks_per_year\": \"10512000\"/g" $HOMEDIR/config/genesis.json
 
 # set ports
 sed -i.bak "s/26657/$RPC_PORT/g" $HOMEDIR/config/config.toml
