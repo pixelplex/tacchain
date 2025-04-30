@@ -7,7 +7,7 @@ export KEYRING_BACKEND=${KEYRING_BACKEND:-test}
 export VALIDATORS_COUNT=${VALIDATORS_COUNT:-4}
 export DENOM=${DENOM:-utac}
 export INITIAL_SUPPLY=${INITIAL_SUPPLY:-10000000000000000000000000000}
-export BLOCK_TIME_SECONDS=${BLOCK_TIME_SECONDS:-4}
+export BLOCK_TIME_SECONDS=${BLOCK_TIME_SECONDS:-2}
 export MAX_GAS=${MAX_GAS:-90000000}
 
 # validators will need 2tac: 1 for min self delegation and 1 for gas in case needed (e.g. unjailing)
