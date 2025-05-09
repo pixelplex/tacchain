@@ -534,6 +534,16 @@ In this example our moniker is `testnode` as named when we initialized our node.
 tacchaind --home .testnet tx staking delegate $(tacchaind --home .testnet q staking validators --output json | jq -r '.validators[] | select(.description.moniker == "testnode") | .operator_address') 1000000000utac --keyring-backend test --from validator -y
 ```
 
+### 5. Participating in governance (optional)
+
+``` sh
+# list all proposals on chain
+tacchaind q gov proposals
+
+# once you have identified the proposal (need `proposal_id`) you can place your vote. In the following example we vote with 'yes', alternatively you can vote with 'no'
+tacchaind tx gov vote <PROPOSAL_ID> yes --from validator
+```
+
 ## Validator Sentry Node Setup
 
 Validators are responsible for ensuring that the network can sustain denial of service attacks.
