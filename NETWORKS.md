@@ -26,7 +26,7 @@
 | Snapshots                   |                                                                                               |
 | - full                      | TBD                                                                                           |
 | - archive                   | TBD                                                                                           |
-| Frontend                    | TBD                                                                                           |
+| Staking UI                  | https://public1.rollup.asphere.xyz/                                                           |
 
 ### Hardware Requirements
 
