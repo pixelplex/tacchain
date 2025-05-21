@@ -224,7 +224,7 @@ echo "{\"pubkey\":$(tacchaind --home .testnet tendermint show-validator),\"amoun
 2. Broadcast tx
 
 ``` sh
-tacchaind --home .testnet tx staking create-validator validatortx.json --from validator --keyring-backend test -y
+tacchaind --home .testnet tx staking create-validator validatortx.json --from validator --keyring-backend test --gas 200000 --gas-prices 4000000000000utac -y
 ```
 
 #### 4. Delegate more tokens (optional)
@@ -232,7 +232,7 @@ tacchaind --home .testnet tx staking create-validator validatortx.json --from va
 In this example our moniker is `testnode` as named when we initialized our node. Don't forget to replace with your node moniker.
 
 ``` sh
-tacchaind --home .testnet tx staking delegate $(tacchaind --home .testnet q staking validators --output json | jq -r '.validators[] | select(.description.moniker == "testnode") | .operator_address') 1000000000000000000utac --keyring-backend test --from validator -y
+tacchaind --home .testnet tx staking delegate $(tacchaind --home .testnet q staking validators --output json | jq -r '.validators[] | select(.description.moniker == "testnode") | .operator_address') 1000000000000000000utac --keyring-backend test --from validator --gas 200000 --gas-prices 4000000000000utac -y
 ```
 
 ### Tac Saint Petersburg Testnet Validator Sentry Node Setup
