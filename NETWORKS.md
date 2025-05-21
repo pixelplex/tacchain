@@ -81,6 +81,15 @@ curl https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/network
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
 
+#### 6. Upgrade binary to v0.0.9 and restart
+
+At block height 871391 your node should halt and throw error `"UPGRADE \"v0.0.9\" NEEDED at height: 871391: add eth_getBlockReceipts, disable x/feemarket, remove wasmd`. Now you need to stop your node, upgrade binary and restart.
+
+``` shell
+git checkout v0.0.9
+tacchaind start --chain-id tacchain_2391-1 --home .testnet
+```
+
 ### Join Tac Saint Petersburg Testnet Using Official Snapshots (TBD)
 
 This example guide connects to testnet. You can replace `chain-id`, `persistent_peers`, `timeout_commit`, `genesis url` with the network you want to join. `--home` flag specifies the path to be used. The example will create [.testnet](.testnet) folder.
