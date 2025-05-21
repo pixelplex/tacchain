@@ -6,10 +6,11 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/Asphere-xyz/tacchain/app/upgrades"
+	v009 "github.com/Asphere-xyz/tacchain/app/upgrades/v0.0.9"
 )
 
 // Upgrades list of chain upgrades
-var Upgrades = []upgrades.Upgrade{}
+var Upgrades = []upgrades.Upgrade{v009.Upgrade}
 
 // RegisterUpgradeHandlers registers the chain upgrade handlers
 func (app *TacChainApp) RegisterUpgradeHandlers() {
