@@ -2,7 +2,7 @@
 
 | Chain ID        | Type      | Status     | Version  | Notes         |
 |-----------------|-----------|------------|----------|---------------|
-| tacchain_2391-1 | `testnet` | **Active** | `v0.0.8`         | Saint Petersburg Testnet |
+| tacchain_2391-1 | `testnet` | **Active** | `v0.0.9`         | Saint Petersburg Testnet |
 | tacchain_2390-1 | `testnet` | **Active** | `v0.0.7-testnet` | Turin Testnet            |
 
 # Saint Petersburg Testnet (`tacchain_2391-1`)
@@ -59,13 +59,21 @@ In this example our node moniker will be `testnode`, don't forget to name your o
 tacchaind init testnode --chain-id tacchain_2391-1 --home .testnet
 ```
 
-#### 3. Modify your [config.toml](.testnet/config/config.toml)
+#### 3. Modify your [config.toml](.testnet/config/config.toml) and [app.toml](.testnet/config/app.toml)
 
+- config.toml:
 ``` toml
 ..
 timeout_commit = "2s"
 ..
 persistent_peers = "9c32b3b959a2427bd2aa064f8c9a8efebdad4c23@206.217.210.164:45130,04a2152eed9f73dc44779387a870ea6480c41fe7@206.217.210.164:45140,5aaaf8140262d7416ac53abe4e0bd13b0f582168@23.92.177.41:45110,ddb3e8b8f4d051e914686302dafc2a73adf9b0d2@23.92.177.41:45120"
+..
+```
+
+- app.toml:
+``` toml
+..
+minimum-gas-prices = "4000000000000utac"
 ..
 ```
 
@@ -83,7 +91,7 @@ tacchaind start --chain-id tacchain_2391-1 --home .testnet
 
 #### 6. Upgrade binary to v0.0.9 and restart
 
-At block height 871391 your node should halt and throw error `"UPGRADE \"v0.0.9\" NEEDED at height: 871391: add eth_getBlockReceipts, disable x/feemarket, remove wasmd`. Now you need to stop your node, upgrade binary and restart.
+At block height 872601 your node should halt and throw error `"UPGRADE \"v0.0.9\" NEEDED at height: 872601: add eth_getBlockReceipts, disable x/feemarket, remove wasmd`. Now you need to stop your node, upgrade binary and restart.
 
 ``` shell
 git checkout v0.0.9
@@ -103,7 +111,7 @@ This example guide connects to testnet. You can replace `chain-id`, `persistent_
   - lz4
   - wget
 
-#### 1. Install latest `tacchaind` [v0.0.8](https://github.com/TacBuild/tacchain/tree/v0.0.8)
+#### 1. Install `tacchaind` [v0.0.8](https://github.com/TacBuild/tacchain/tree/v0.0.8)
 
 ``` shell
 git checkout v0.0.8
@@ -118,13 +126,21 @@ In this example our node moniker will be `testnode`, don't forget to name your o
 tacchaind init testnode --chain-id tacchain_2391-1 --home .testnet
 ```
 
-#### 3. Modify your [config.toml](.testnet/config/config.toml)
+#### 3. Modify your [config.toml](.testnet/config/config.toml) and [app.toml](.testnet/config/app.toml)
 
+- config.toml:
 ``` toml
 ..
 timeout_commit = "2s"
 ..
 persistent_peers = "9c32b3b959a2427bd2aa064f8c9a8efebdad4c23@206.217.210.164:45130,04a2152eed9f73dc44779387a870ea6480c41fe7@206.217.210.164:45140,5aaaf8140262d7416ac53abe4e0bd13b0f582168@23.92.177.41:45110,ddb3e8b8f4d051e914686302dafc2a73adf9b0d2@23.92.177.41:45120"
+..
+```
+
+- app.toml:
+``` toml
+..
+minimum-gas-prices = "4000000000000utac"
 ..
 ```
 
