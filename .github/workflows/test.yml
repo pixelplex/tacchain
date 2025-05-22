@@ -119,3 +119,10 @@ jobs:
           check-latest: true
       - run: make install
       - run: make test-e2e
+
+  test-tac-address-converter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: cd ./contrib/tac-address-converter && npm install && npm run test
