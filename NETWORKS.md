@@ -17,7 +17,8 @@
 | EVM JSON RPC                | <https://spb.rpc.tac.build>                                                                                           |
 | Faucet                      | <https://spb.faucet.tac.build/>                                                                                           |
 | EVM Explorer                | <https://spb.explorer.tac.build/>                                                                                           |
-| Cosmos Explorer             | <https://bd-explorer.tac-spb.ankr.com/>                                                                                           |
+| Cosmos Explorer             | <https://pp-explorer.tac-spb.tac.build/>                                                                                           |
+| Staking UI                  | <https://staking.spb.tac.build/>                                                           |
 | Timeout commit (block time) | 2s                                                                                            |
 | Minimum gas price           | 25000000000utac                                                                                            |
 | Peer 1                      | 9c32b3b959a2427bd2aa064f8c9a8efebdad4c23@206.217.210.164:45130                                                                                           |
@@ -27,7 +28,6 @@
 | Snapshots                   |                                                                                               |
 | - full                      | TBD                                                                                           |
 | - archive                   | TBD                                                                                           |
-| Staking UI                  | https://public1.rollup.asphere.xyz/                                                           |
 
 ### Hardware Requirements
 
