@@ -100,7 +100,7 @@ tacchaind start --chain-id tacchain_2391-1 --home .testnet
 
 #### 7. Upgrade binary to v0.0.10 and restart
 
-At block height 939310 your node should halt and throw error `"UPGRADE \"v0.0.10\" NEEDED at height: 939310: enable x/feemarket tx fee checker"`. Now you need to stop your node, upgrade binary and restart.
+At block height 939826 your node should halt and throw error `"UPGRADE \"v0.0.10\" NEEDED at height: 939826: enable x/feemarket tx fee checker"`. Now you need to stop your node, upgrade binary and restart.
 
 ``` shell
 git checkout v0.0.10
