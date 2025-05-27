@@ -3,3 +3,6 @@ coverage.txt
 *.log
 .DS_Store
 .testnet
+.test-localnet-params
+.test-localnet-evm
+

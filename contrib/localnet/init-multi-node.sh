@@ -6,19 +6,22 @@ export HOMEDIR=${HOMEDIR:-./.testnet}
 export CHAIN_ID=${CHAIN_ID:-tacchain_239-1}
 export KEYRING_BACKEND=${KEYRING_BACKEND:-test}
 export VALIDATORS_COUNT=${VALIDATORS_COUNT:-4}
-export DENOM=${DENOM:-utac}
+export VALIDATOR_NAME=${VALIDATOR_NAME:-TAC Validator}
+export VALIDATOR_IDENTITY=${VALIDATOR_IDENTITY:-TAC}
+export VALIDATOR_WEBSITE=${VALIDATOR_WEBSITE:-https://tac.build/}
 export GENESIS_ACC_ADDRESS=${GENESIS_ACC_ADDRESS:-}
 export INITIAL_SUPPLY=${INITIAL_SUPPLY:-10000000000000000000000000000}
 export BLOCK_TIME_SECONDS=${BLOCK_TIME_SECONDS:-2}
 export MAX_GAS=${MAX_GAS:-90000000}
 export MIN_GAS_PRICE=${MIN_GAS_PRICE:-25000000000}
-export GOV_TIME_SECONDS=${GOV_TIME_SECONDS:-900}
-export MIN_GOV_DEPOSIT=${MIN_GOV_DEPOSIT:-100000000000000000}
-export MIN_EXPEDITED_GOV_DEPOSIT=${MIN_EXPEDITED_GOV_DEPOSIT:-500000000000000000}
+export GOV_TIME_SECONDS=${GOV_TIME_SECONDS:-43200}
+export MIN_GOV_DEPOSIT=${MIN_GOV_DEPOSIT:-10000000000000000}
+export MIN_EXPEDITED_GOV_DEPOSIT=${MIN_EXPEDITED_GOV_DEPOSIT:-50000000000000000}
 export INFLATION_MAX=${INFLATION_MAX:-0.05}
-export INFLATION_MIN=${INFLATION_MIN:-0.00}
+export INFLATION_MIN=${INFLATION_MIN:-0}
 export GOAL_BONDED=${GOAL_BONDED:-0.6}
 export SLASH_DOWNTIME_PENALTY=${SLASH_DOWNTIME_PENALTY:-0.001}
+export SLASH_SIGNED_BLOCKS_WINDOW=${SLASH_SIGNED_BLOCKS_WINDOW:-21600}
 
 # validate validators count is at least 2
 if [[ "$VALIDATORS_COUNT" -le 1 ]]; then
@@ -67,7 +70,7 @@ for ((i = 0 ; i < VALIDATORS_COUNT ; i++)); do
   export JSON_WS_PORT=451$((i+1))9    # 45119
   export PROXY_PORT=451$((i+1))10     # 451110
 
-  export NODE_MONIKER=$NODE_KEY
+  export NODE_MONIKER="$VALIDATOR_NAME $((i + 1))"
   
   export INITIAL_BALANCE=$VALIDATOR_BALANCE
   export INITIAL_STAKE=$VALIDATOR_SELF_DELEGATION
@@ -77,7 +80,7 @@ for ((i = 0 ; i < VALIDATORS_COUNT ; i++)); do
 
   # explicitly add balances to first node(node0) which will be used to collect gentxs later
   ADDRESS=$($TACCHAIND keys show validator --keyring-backend $KEYRING_BACKEND --home $NODEDIR -a)
-  $TACCHAIND genesis add-genesis-account $ADDRESS ${VALIDATOR_BALANCE}${DENOM} --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0  &> /dev/null || true
+  $TACCHAIND genesis add-genesis-account $ADDRESS ${VALIDATOR_BALANCE}utac --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0  &> /dev/null || true
 
   # copy gentx into main gentxs
   cp $NODEDIR/config/gentx/* "$HOMEDIR/gentxs/"
@@ -88,7 +91,7 @@ if [ -z "$GENESIS_ACC_ADDRESS" ]; then
   $TACCHAIND keys add faucet --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0
   GENESIS_ACC_ADDRESS=$($TACCHAIND keys show faucet --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0 -a)
 fi
-$TACCHAIND genesis add-genesis-account $GENESIS_ACC_ADDRESS ${GENESIS_ACC_BALANCE}${DENOM} --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0
+$TACCHAIND genesis add-genesis-account $GENESIS_ACC_ADDRESS ${GENESIS_ACC_BALANCE}utac --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0
 
 # collect gentxs from first node, then copy updated genesis to all validators, then update persistent peers
 cp $HOMEDIR/gentxs/* "$HOMEDIR/node0/config/gentx/"

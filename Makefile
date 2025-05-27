@@ -92,10 +92,10 @@ clean:
 ###                                 Tests                                   ###
 ###############################################################################
 
-test: test-unit test-race test-e2e
+test: test-unit test-race test-e2e test-localnet-params test-localnet-evm test-ledger test-solidity
 
 test-unit:
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' -v $(shell go list ./... | grep -v "tests/e2e")
+	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' -v $(shell go list ./... | grep -v "tests")
 
 test-race:
 	@VERSION=$(VERSION) go test -mod=readonly -race -tags='ledger test_ledger_mock' ./...
@@ -108,6 +108,18 @@ test-cover:
 
 test-benchmark:
 	@go test -mod=readonly -bench=. ./...
+
+test-localnet-params:
+	./tests/localnet/test-params.sh
+
+test-localnet-evm:
+	./tests/localnet/test-evm.sh
+
+test-ledger:
+	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' -v ./tests/ledger/...
+
+test-solidity:
+	./tests/solidity/run-solidity-tests.sh
 
 ###############################################################################
 ###                                Networks                                 ###
@@ -126,7 +138,4 @@ localnet-init-multi-node:
 
 localnet-start:
 	./contrib/localnet/start.sh
-
-testnet-init:
-	@$(TACCHAIND) testnet init-files --keyring-backend=test
 
