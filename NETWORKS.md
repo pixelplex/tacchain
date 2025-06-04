@@ -2,14 +2,14 @@
 
 | Chain ID        | Type      | Status     | Version  | Notes         |
 |-----------------|-----------|------------|----------|---------------|
-| tacchain_2391-1 | `testnet` | **Active** | `v0.0.10`         | Saint Petersburg Testnet |
+| tacchain_2391-1 | `testnet` | **Active** | `v0.0.11`         | Saint Petersburg Testnet |
 | tacchain_2390-1 | `testnet` | **Active** | `v0.0.7-testnet` | Turin Testnet            |
 
 # Saint Petersburg Testnet (`tacchain_2391-1`)
 
 | Chain ID                    | `tacchain_2391-1`                                                                             |
 |-----------------------------|-----------------------------------------------------------------------------------------------|
-| Tacchaind version           | `v0.0.8`                                                                                      |
+| Tacchaind version           | `v0.0.11`                                                                                      |
 | RPC                         | <https://spb.tendermint.rpc.tac.build>                                                                                           |
 | Genesis                     | <https://spb.tendermint-rest.rpc.tac.build/genesis>                                                                                           |
 | gRPC                        | <https://spb-grpc.rpc.tac.build>                                                                                           |
@@ -108,6 +108,15 @@ git checkout v0.0.10
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
 
+#### 8. Upgrade binary to v0.0.11 and restart
+
+At block height 1297619 your node should halt and throw error `"UPGRADE \"v0.0.11\" NEEDED at height: 1297619: allow non-EOA to stake via evm staking precompile and force 0 inflation"`. Now you need to stop your node, upgrade binary and restart.
+
+``` shell
+git checkout v0.0.11
+tacchaind start --chain-id tacchain_2391-1 --home .testnet
+```
+
 ### Join Tac Saint Petersburg Testnet Using Official Snapshots (TBD)
 
 This example guide connects to testnet. You can replace `chain-id`, `persistent_peers`, `timeout_commit`, `genesis url` with the network you want to join. `--home` flag specifies the path to be used. The example will create [.testnet](.testnet) folder.
@@ -121,10 +130,10 @@ This example guide connects to testnet. You can replace `chain-id`, `persistent_
   - lz4
   - wget
 
-#### 1. Install `tacchaind` [v0.0.8](https://github.com/TacBuild/tacchain/tree/v0.0.8)
+#### 1. Install `tacchaind` [v0.0.11](https://github.com/TacBuild/tacchain/tree/v0.0.11)
 
 ``` shell
-git checkout v0.0.8
+git checkout v0.0.11
 make install
 ```
 
@@ -181,7 +190,7 @@ tacchaind start --chain-id tacchain_2391-1 --home .testnet
 
 ``` shell
 export TAC_HOME="~/.tacchain"
-export VERSION="v0.0.8"
+export VERSION="v0.0.11"
 
 git clone https://github.com/TacBuild/tacchain.git && cd tacchain
 git checkout ${VERSION}
