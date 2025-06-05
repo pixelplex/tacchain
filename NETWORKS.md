@@ -96,6 +96,7 @@ At block height 872601 your node should halt and throw error `"UPGRADE \"v0.0.9\
 
 ``` shell
 git checkout v0.0.9
+make install
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
 
@@ -105,6 +106,7 @@ At block height 939826 your node should halt and throw error `"UPGRADE \"v0.0.10
 
 ``` shell
 git checkout v0.0.10
+make install
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
 
@@ -114,6 +116,7 @@ At block height 1297619 your node should halt and throw error `"UPGRADE \"v0.0.1
 
 ``` shell
 git checkout v0.0.11
+make install
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
 
