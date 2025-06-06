@@ -109,12 +109,12 @@ make install
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
 
-#### 8. Upgrade binary to v0.0.11 and restart
+#### 8. Upgrade binary to v0.0.12 and restart
 
-At block height 1297619 your node should halt and throw error `"UPGRADE \"v0.0.11\" NEEDED at height: 1297619: allow non-EOA to stake via evm staking precompile and force 0 inflation"`. Now you need to stop your node, upgrade binary and restart.
+At block height 1297619 your node should halt and throw error `"UPGRADE \"v0.0.11\" NEEDED at height: 1297619: allow non-EOA to stake via evm staking precompile and force 0 inflation"`. Now you need to stop your node, upgrade binary and restart. Note that that the error states v0.0.11, but we are switching to v0.0.12 instead - it includes a non-state breaking change and also includes v0.0.11 upgrade.
 
 ``` shell
-git checkout v0.0.11
+git checkout v0.0.12
 make install
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
