@@ -22,10 +22,10 @@
 | Timeout commit | 1s                                                                                            |
 | Block time | 2s                                                                                            |
 | Minimum gas price           | 25000000000utac                                                                                            |
-| Peer 1                      | TBD                                                                                           |
-| Peer 2                      | TBD                                                                                           |
-| Peer 3                      | TBD                                                                                           |
-| Peer 4                      | TBD                                                                                           |
+| Peer 1                      | d0a80c43a10a6b60475864728db6d9ba4ead42d2@107.6.113.60:58960                                                                                           |
+| Peer 2                      | 10550a03e4f7fa487c78fbd07e0770e2b0f085c7@64.46.115.78:58960                                                                                           |
+| Peer 3                      | 0efae9d157f0ef60ad7d25507d6939799f832e34@69.4.239.26:58960                                                                                           |
+| Peer 4                      | 78079166d06e345dbf4a5c932ee3c69a04148e92@107.6.91.38:58960                                                                                           |
 | Snapshots                   |                                                                                               |
 | - full                      | TBD                                                                                           |
 | - archive                   | TBD                                                                                           |
@@ -66,7 +66,7 @@ tacchaind init testnode --chain-id tacchain_239-1 --home .mainnet
 - config.toml:
 ``` toml
 ..
-persistent_peers = "TBD"
+persistent_peers = "d0a80c43a10a6b60475864728db6d9ba4ead42d2@107.6.113.60:58960,10550a03e4f7fa487c78fbd07e0770e2b0f085c7@64.46.115.78:58960,0efae9d157f0ef60ad7d25507d6939799f832e34@69.4.239.26:58960,78079166d06e345dbf4a5c932ee3c69a04148e92@107.6.91.38:58960"
 ..
 ```
 
@@ -115,7 +115,7 @@ tacchaind init testnode --chain-id tacchain_239-1 --home .mainnet
 - config.toml:
 ``` toml
 ..
-persistent_peers = "TBD"
+persistent_peers = "d0a80c43a10a6b60475864728db6d9ba4ead42d2@107.6.113.60:58960,10550a03e4f7fa487c78fbd07e0770e2b0f085c7@64.46.115.78:58960,0efae9d157f0ef60ad7d25507d6939799f832e34@69.4.239.26:58960,78079166d06e345dbf4a5c932ee3c69a04148e92@107.6.91.38:58960"
 ..
 ```
 
@@ -233,7 +233,7 @@ To setup your sentry node architecture you can follow the instructions below:
 
 ``` toml
 ..
-persistent_peers = "TBD"
+persistent_peers = "d0a80c43a10a6b60475864728db6d9ba4ead42d2@107.6.113.60:58960,10550a03e4f7fa487c78fbd07e0770e2b0f085c7@64.46.115.78:58960,0efae9d157f0ef60ad7d25507d6939799f832e34@69.4.239.26:58960,78079166d06e345dbf4a5c932ee3c69a04148e92@107.6.91.38:58960"
 ..
 private_peer_ids = "<VALIDATOR_PEER_ID>@<VALIDATOR_IP:PORT>
 ..
