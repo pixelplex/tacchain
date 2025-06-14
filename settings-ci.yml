@@ -6,12 +6,12 @@ deploy:
     tacchain:
       branch: develop
       docker_compose: true
-      docker_compose_file: ./networks/tacchain_2391-1/docker-compose-geth0.yml   
+      docker_compose_file: ./networks/tacchain_2391-1/docker-compose.yml   
       runner_tags: 
         - taccnetwork-dev
 
 apps:
-  geth:
+  tac:
     image: golang:1.23.8-alpine3.20
     runner_tags:
       - docker
