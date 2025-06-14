@@ -1,0 +1,23 @@
+---
+trufflehog_ignore: true
+
+deploy:
+  environment:
+    tacchain:
+      branch: develop
+      docker_compose: true
+      docker_compose_file: ./networks/tacchain_2391-1/docker-compose-geth0.yml   
+      runner_tags: 
+        - taccnetwork-dev
+
+apps:
+  geth:
+    image: golang:1.23.8-alpine3.20
+    runner_tags:
+      - docker
+    code_analysis: false
+    build: false
+    docker_build:
+      runner_tags:
+        - docker
+    test_docker: false
