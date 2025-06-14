@@ -10,7 +10,7 @@ services:
       - RPC_PORT_EVM=45138
       - WS_PORT_EVM=45139
     volumes:
-      - "/data/tac:/data"
+      - "/data/tac/:/data"
     entrypoint: /bin/sh
     command: >
       -c "[ ! -e /data/config/config.toml ] && tacchaind init $MONIKER --chain-id tacchain_2391-1 --home /data && cd /data/config && rm genesis.json && wget https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/networks/tacchain_2391-1/genesis.json || exit 0"
@@ -28,7 +28,7 @@ services:
       - RPC_PORT_EVM=45138
       - WS_PORT_EVM=45139
     volumes:
-      - "/data/tac:/data"
+      - "/data/tac/:/data"
     depends_on:
       tac-spb-testnet-init:
         condition: service_completed_successfully
