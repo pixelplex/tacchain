@@ -236,13 +236,15 @@ func (k msgServer) UpdateWhitelistedValidators(goCtx context.Context, msg *types
 		}
 	}
 
+	if len(msg.WhitelistedValidators) == 0 {
+		return nil, errors.Wrap(types.ErrWhitelistedValidatorsList, "whitelisted validators list cannot be empty")
+	}
 	if !totalWeight.Equal(types.TotalValidatorWeight) {
 		return nil, errors.Wrapf(
 			types.ErrWhitelistedValidatorsList,
 			"weights don't add up; expected %s, got %s", types.TotalValidatorWeight.String(), totalWeight.String(),
 		)
 	}
-
 	params.WhitelistedValidators = msg.WhitelistedValidators
 
 	err := k.SetParams(ctx, params)

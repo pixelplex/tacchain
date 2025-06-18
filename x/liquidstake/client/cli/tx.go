@@ -201,7 +201,6 @@ Example params.json
   "lsm_disabled": false,
   "unstake_fee_rate": "0.000000000000000000",
   "min_liquid_staking_amount": "10000",
-  "min_liquid_staking_amount": "10000",
   "cw_locked_pool_address": "persistence14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sjvz4fk"
 }
 `,

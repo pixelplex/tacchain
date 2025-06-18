@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -28,8 +27,8 @@ type BankKeeper interface {
 // AccountKeeper defines the expected account keeper
 type AccountKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
-	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+	GetModuleAccount(ctx sdk.Context, moduleName string) sdk.ModuleAccountI
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) sdk.AccountI
 }
 
 // StakingKeeper expected staking keeper (noalias)
@@ -64,7 +63,7 @@ type StakingKeeper interface {
 	BlockValidatorUpdates(ctx sdk.Context) []abci.ValidatorUpdate
 	HasMaxUnbondingDelegationEntries(ctx sdk.Context,
 		delegatorAddr sdk.AccAddress, validatorAddr sdk.ValAddress) bool
-	GetBondedPool(ctx sdk.Context) (bondedPool authtypes.ModuleAccountI)
+	GetBondedPool(ctx sdk.Context) (bondedPool sdk.ModuleAccountI)
 }
 
 // MintKeeper expected minting keeper (noalias)

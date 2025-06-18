@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	// TODO: replace it with local cosmos sdk epoch hooks
 	// epochstypes "github.com/persistenceOne/persistence-sdk/v2/x/epochs/types"
@@ -31,13 +33,13 @@ func (h EpochHooks) AfterEpochEnd(_ sdk.Context, _ string, _ int64) error {
 func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochIdentifier string, _ int64) error {
 	if !k.GetParams(ctx).ModulePaused {
 		// Update the liquid validator set at the start of each epoch
-		if epochIdentifier == liquidstake.AutocompoundEpoch {
+		switch epochIdentifier {
+		case liquidstake.AutocompoundEpoch:
 			k.AutocompoundStakingRewards(ctx, liquidstake.GetWhitelistedValsMap(k.GetParams(ctx).WhitelistedValidators))
-		}
-
-		if epochIdentifier == liquidstake.RebalanceEpoch {
-			// return value of UpdateLiquidValidatorSet is useful only in testing
+		case liquidstake.RebalanceEpoch:
 			_ = k.UpdateLiquidValidatorSet(ctx, true)
+		default:
+			return fmt.Errorf("unknown epoch identifier: %s", epochIdentifier)
 		}
 	}
 

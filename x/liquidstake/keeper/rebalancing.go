@@ -93,10 +93,10 @@ func (k Keeper) Rebalance(
 	rebalancingThresholdAmt := rebalancingTrigger.Mul(math.LegacyNewDecFromInt(totalLiquidTokens)).TruncateInt()
 	redelegations = make([]types.Redelegation, 0, liquidVals.Len())
 
-	for i := 0; i < liquidVals.Len(); i++ {
+	for i := range liquidVals.Len() {
 		// get min, max of liquid token gap
 		minVal, maxVal, amountNeeded, last := liquidVals.MinMaxGap(targetMap, liquidTokenMap)
-		if amountNeeded.IsZero() || (i == 0 && !amountNeeded.GT(rebalancingThresholdAmt)) {
+		if amountNeeded.IsNegative() || amountNeeded.IsZero() || (i == 0 && !amountNeeded.GT(rebalancingThresholdAmt)) {
 			break
 		}
 
@@ -222,7 +222,9 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 
 	// use the calculated autocompoundable amount as the limit for the transfer
 	proxyAccBalance := k.GetProxyAccBalance(ctx, types.LiquidStakeProxyAcc)
-	if proxyAccBalance.Amount.LT(autoCompoundableAmount) {
+	if proxyAccBalance.Amount.IsNegative() {
+		autoCompoundableAmount = math.ZeroInt()
+	} else if proxyAccBalance.Amount.LT(autoCompoundableAmount) {
 		autoCompoundableAmount = proxyAccBalance.Amount
 	}
 
