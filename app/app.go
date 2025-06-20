@@ -97,6 +97,7 @@ import (
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
@@ -562,7 +563,7 @@ func NewTacChainApp(
 		keys[liquidstaketypes.StoreKey],
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper,
+		*app.StakingKeeper,
 		app.MintKeeper,
 		app.DistrKeeper,
 		app.SlashingKeeper,

@@ -8,12 +8,17 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
+	
 	"github.com/Asphere-xyz/tacchain/x/liquidstake/types"
 )
 
 func (k Keeper) GetProxyAccBalance(ctx sdk.Context, proxyAcc sdk.AccAddress) (balance sdk.Coin) {
-	bondDenom := k.stakingKeeper.BondDenom(ctx)
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		//TODO: fix
+		panic(-1)
+	}
+
 	return sdk.NewCoin(bondDenom, k.bankKeeper.SpendableCoins(ctx, proxyAcc).AmountOf(bondDenom))
 }
 
@@ -23,7 +28,11 @@ func (k Keeper) TryRedelegation(ctx sdk.Context, re types.Redelegation) (complet
 	srcVal := re.SrcValidator.GetOperator()
 
 	// check the source validator already has receiving transitive redelegation
-	hasReceiving := k.stakingKeeper.HasReceivingRedelegation(ctx, re.Delegator, srcVal)
+	hasReceiving, err := k.stakingKeeper.HasReceivingRedelegation(ctx, re.Delegator, srcVal)
+	if err != nil {
+		return time.Time{}, err
+	}
+
 	if hasReceiving {
 		return time.Time{}, stakingtypes.ErrTransitiveRedelegation
 	}
@@ -206,10 +215,22 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 	}
 
 	// get all the APY components
-	bondDenom := k.stakingKeeper.BondDenom(ctx)
+	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		//TODO: fix
+		panic(-1)
+	}
+
 	totalSupply := k.bankKeeper.GetSupply(ctx, bondDenom).Amount
 	bondedTokens := k.bankKeeper.GetBalance(ctx, k.stakingKeeper.GetBondedPool(ctx).GetAddress(), bondDenom).Amount
-	inflation := k.mintKeeper.GetMinter(ctx).Inflation
+	//inflation := k.mintKeeper.GetMinter(ctx).Inflation
+	minter, err := k.mintKeeper.Minter.Get(ctx)
+	if err != nil {
+		//TODO: fix
+		panic(-1)
+	}
+	inflation := minter.Inflation
+
 
 	// calculate the hourly APY
 	bondRatio := math.LegacyDec(bondedTokens).Quo(math.LegacyDec(totalSupply))
@@ -218,7 +239,12 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 		Quo(types.DefaultLimitAutocompoundPeriodHours)
 
 	// calculate autocompoundable amount by limiting the current net amount with the calculated APY
-	autoCompoundableAmount := k.GetNetAmountState(ctx).NetAmount.Mul(hourlyApy).TruncateInt()
+	NetAmountState, err := k.GetNetAmountState(ctx)
+	if err != nil {
+		//TODO: fix
+		panic(-1)
+	}
+	autoCompoundableAmount := NetAmountState.NetAmount.Mul(hourlyApy).TruncateInt()
 
 	// use the calculated autocompoundable amount as the limit for the transfer
 	proxyAccBalance := k.GetProxyAccBalance(ctx, types.LiquidStakeProxyAcc)
@@ -230,10 +256,16 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 
 	// calculate autocompounding fee
 	params := k.GetParams(ctx)
-	autocompoundFee := sdk.NewCoin(k.stakingKeeper.BondDenom(ctx), math.ZeroInt())
+	bondDenom, err = k.stakingKeeper.BondDenom(ctx)
+	if err != nil {
+		//TODO: fix
+		panic(-1)
+	}
+
+	autocompoundFee := sdk.NewCoin(bondDenom, math.ZeroInt())
 	if !params.AutocompoundFeeRate.IsZero() && autoCompoundableAmount.IsPositive() {
 		autocompoundFee = sdk.NewCoin(
-			k.stakingKeeper.BondDenom(ctx),
+			bondDenom,
 			params.AutocompoundFeeRate.MulInt(autoCompoundableAmount).TruncateInt(),
 		)
 	}
@@ -241,7 +273,7 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 	// re-staking of the accumulated rewards
 	cachedCtx, writeCache := ctx.CacheContext()
 	delegableAmount := autoCompoundableAmount.Sub(autocompoundFee.Amount)
-	err := k.LiquidDelegate(cachedCtx, types.LiquidStakeProxyAcc, activeVals, delegableAmount, whitelistedValsMap)
+	err = k.LiquidDelegate(cachedCtx, types.LiquidStakeProxyAcc, activeVals, delegableAmount, whitelistedValsMap)
 	if err != nil {
 		k.Logger(ctx).Error(
 			"failed to re-stake the accumulated rewards",

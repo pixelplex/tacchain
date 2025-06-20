@@ -46,8 +46,8 @@ func (v LiquidValidator) GetOperator() sdk.ValAddress {
 }
 
 func (v LiquidValidator) GetDelShares(ctx sdk.Context, sk StakingKeeper) math.LegacyDec {
-	del, found := sk.GetDelegation(ctx, LiquidStakeProxyAcc, v.GetOperator())
-	if !found {
+	del, err := sk.GetDelegation(ctx, LiquidStakeProxyAcc, v.GetOperator())
+	if err != nil {
 		return math.LegacyZeroDec()
 	}
 	return del.GetShares()
@@ -58,7 +58,11 @@ func (v LiquidValidator) GetLiquidTokens(ctx sdk.Context, sk StakingKeeper, only
 	if !delShares.IsPositive() {
 		return math.ZeroInt()
 	}
-	val := sk.Validator(ctx, v.GetOperator())
+	val, err := sk.Validator(ctx, v.GetOperator())
+	if err != nil {
+		//TODO: fix
+		panic(-1)
+	}
 	if onlyBonded && !val.IsBonded() {
 		return math.ZeroInt()
 	}

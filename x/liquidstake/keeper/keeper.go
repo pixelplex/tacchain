@@ -9,6 +9,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+
 	"github.com/Asphere-xyz/tacchain/x/liquidstake/types"
 )
 
@@ -17,12 +24,12 @@ type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey storetypes.StoreKey
 
-	accountKeeper  types.AccountKeeper
-	bankKeeper     types.BankKeeper
-	stakingKeeper  types.StakingKeeper
-	mintKeeper     types.MintKeeper
-	distrKeeper    types.DistrKeeper
-	slashingKeeper types.SlashingKeeper
+	accountKeeper  authkeeper.AccountKeeper
+	bankKeeper     bankkeeper.BaseKeeper
+	stakingKeeper  stakingkeeper.Keeper
+	mintKeeper     mintkeeper.Keeper
+	distrKeeper    distrkeeper.Keeper
+	slashingKeeper slashingkeeper.Keeper
 
 	router    *baseapp.MsgServiceRouter
 	authority string
@@ -32,12 +39,12 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey storetypes.StoreKey,
-	accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper,
-	stakingKeeper types.StakingKeeper,
-	mintKeeper types.MintKeeper,
-	distrKeeper types.DistrKeeper,
-	slashingKeeper types.SlashingKeeper,
+	accountKeeper         authkeeper.AccountKeeper,
+	bankKeeper            bankkeeper.BaseKeeper,
+	stakingKeeper         stakingkeeper.Keeper,
+	mintKeeper            mintkeeper.Keeper,
+	distrKeeper           distrkeeper.Keeper,
+	slashingKeeper        slashingkeeper.Keeper,
 	router *baseapp.MsgServiceRouter,
 	authority string,
 ) Keeper {
