@@ -152,6 +152,10 @@ import (
 	evmibctransferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	evmvmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	evmvmtypes "github.com/cosmos/evm/x/vm/types"
+
+	"github.com/Asphere-xyz/tacchain/x/liquidstake"
+	liquidstakekeeper "github.com/Asphere-xyz/tacchain/x/liquidstake/keeper"
+	liquidstaketypes "github.com/Asphere-xyz/tacchain/x/liquidstake/types"
 )
 
 // module account permissions
@@ -167,6 +171,8 @@ var maccPerms = map[string][]string{
 	ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:      nil,
 	icatypes.ModuleName:         nil,
+	// liquidstake module
+	liquidstaketypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	// Cosmos EVM modules
 	evmvmtypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
 	evmfeemarkettypes.ModuleName: nil,
@@ -232,6 +238,9 @@ type TacChainApp struct {
 
 	// module configurator
 	configurator module.Configurator
+
+	// liquidstake keeper
+	LiquidstakeKeeper liquidstakekeeper.Keeper
 
 	// Cosmos EVM keepers
 	FeeMarketKeeper evmfeemarketkeeper.Keeper
@@ -300,6 +309,8 @@ func NewTacChainApp(
 		// non sdk store keys
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		icahosttypes.StoreKey, icacontrollertypes.StoreKey,
+		// liquidstake module
+		liquidstaketypes.StoreKey,
 		// Cosmos EVM store keys
 		evmvmtypes.StoreKey, evmfeemarkettypes.StoreKey, evmerc20types.StoreKey,
 	)
@@ -545,6 +556,20 @@ func NewTacChainApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	// liquidstake keeper
+	app.LiquidstakeKeeper = liquidstakekeeper.NewKeeper(
+		encodingConfig.Codec,
+		keys[liquidstaketypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.MintKeeper,
+		app.DistrKeeper,
+		app.SlashingKeeper,
+		app.MsgServiceRouter(),
+		authAddr,
+	)
+
 	// Cosmos EVM keepers
 	app.FeeMarketKeeper = evmfeemarketkeeper.NewKeeper(
 		encodingConfig.Codec, authtypes.NewModuleAddress(govtypes.ModuleName),
@@ -719,6 +744,8 @@ func NewTacChainApp(
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.AppModule{},
+		// liquidstake module
+		liquidstake.NewAppModule(app.LiquidstakeKeeper),
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
 		// Cosmos EVM modules
@@ -760,6 +787,8 @@ func NewTacChainApp(
 		capabilitytypes.ModuleName,
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
+		// liquidstake module after staking
+		liquidstaketypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
 		ibcexported.ModuleName,
@@ -840,6 +869,8 @@ func NewTacChainApp(
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		// liquidstake module
+		liquidstaketypes.ModuleName,
 
 		// Cosmos EVM modules
 		//
