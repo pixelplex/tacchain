@@ -1,0 +1,22 @@
+---
+trufflehog_ignore: true
+
+deploy:
+  environment:
+    tacchain:
+      branch: main
+      docker_compose: true
+      runner_tags: 
+        - taccnetwork-dev
+
+apps:
+  tac:
+    image: golang:1.23.8-alpine3.20
+    runner_tags:
+      - docker
+    code_analysis: false
+    build: false
+    docker_build:
+      runner_tags:
+        - docker
+    test_docker: false
