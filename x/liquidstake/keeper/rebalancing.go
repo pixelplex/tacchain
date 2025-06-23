@@ -12,14 +12,13 @@ import (
 	"github.com/Asphere-xyz/tacchain/x/liquidstake/types"
 )
 
-func (k Keeper) GetProxyAccBalance(ctx sdk.Context, proxyAcc sdk.AccAddress) (balance sdk.Coin) {
+func (k Keeper) GetProxyAccBalance(ctx sdk.Context, proxyAcc sdk.AccAddress) (balance sdk.Coin, err error) {
 	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
 	if err != nil {
-		//TODO: fix
-		panic(-1)
+		return sdk.Coin{}, err
 	}
 
-	return sdk.NewCoin(bondDenom, k.bankKeeper.SpendableCoins(ctx, proxyAcc).AmountOf(bondDenom))
+	return sdk.NewCoin(bondDenom, k.bankKeeper.SpendableCoins(ctx, proxyAcc).AmountOf(bondDenom)), nil
 }
 
 // TryRedelegation attempts redelegation, which is applied only when successful through cached context because there is a constraint that fails if already receiving redelegation.
@@ -204,21 +203,20 @@ func (k Keeper) UpdateLiquidValidatorSet(ctx sdk.Context, redelegate bool) (rede
 }
 
 // AutocompoundStakingRewards withdraws staking rewards and re-stakes when over threshold.
-func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap types.WhitelistedValsMap) {
+func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap types.WhitelistedValsMap) error {
 	// withdraw rewards of LiquidStakeProxyAcc
 	k.WithdrawLiquidRewards(ctx, types.LiquidStakeProxyAcc)
 
 	// skip when no active liquid validator
 	activeVals := k.GetActiveLiquidValidators(ctx, whitelistedValsMap)
 	if len(activeVals) == 0 {
-		return
+		return nil
 	}
 
 	// get all the APY components
 	bondDenom, err := k.stakingKeeper.BondDenom(ctx)
 	if err != nil {
-		//TODO: fix
-		panic(-1)
+		return err
 	}
 
 	totalSupply := k.bankKeeper.GetSupply(ctx, bondDenom).Amount
@@ -226,8 +224,7 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 	//inflation := k.mintKeeper.GetMinter(ctx).Inflation
 	minter, err := k.mintKeeper.Minter.Get(ctx)
 	if err != nil {
-		//TODO: fix
-		panic(-1)
+		return err
 	}
 	inflation := minter.Inflation
 
@@ -241,13 +238,15 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 	// calculate autocompoundable amount by limiting the current net amount with the calculated APY
 	NetAmountState, err := k.GetNetAmountState(ctx)
 	if err != nil {
-		//TODO: fix
-		panic(-1)
+		return err
 	}
 	autoCompoundableAmount := NetAmountState.NetAmount.Mul(hourlyApy).TruncateInt()
 
 	// use the calculated autocompoundable amount as the limit for the transfer
-	proxyAccBalance := k.GetProxyAccBalance(ctx, types.LiquidStakeProxyAcc)
+	proxyAccBalance, err := k.GetProxyAccBalance(ctx, types.LiquidStakeProxyAcc)
+	if err != nil {
+		return err
+	}
 	if proxyAccBalance.Amount.IsNegative() {
 		autoCompoundableAmount = math.ZeroInt()
 	} else if proxyAccBalance.Amount.LT(autoCompoundableAmount) {
@@ -258,8 +257,7 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 	params := k.GetParams(ctx)
 	bondDenom, err = k.stakingKeeper.BondDenom(ctx)
 	if err != nil {
-		//TODO: fix
-		panic(-1)
+		return err
 	}
 
 	autocompoundFee := sdk.NewCoin(bondDenom, math.ZeroInt())
@@ -280,7 +278,7 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 			types.ErrorKeyVal,
 			err,
 		)
-		return
+		return nil
 		// skip errors as they might occur due to reaching global liquid cap
 	}
 	writeCache()
@@ -294,7 +292,7 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 			types.ErrorKeyVal,
 			err,
 		)
-		return
+		return nil
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -309,4 +307,6 @@ func (k Keeper) AutocompoundStakingRewards(ctx sdk.Context, whitelistedValsMap t
 		types.AttributeKeyDelegator, types.LiquidStakeProxyAcc.String(),
 		sdk.AttributeKeyAmount, delegableAmount.String(),
 		types.AttributeKeyAutocompoundFee, autocompoundFee.String())
+
+	return nil
 }

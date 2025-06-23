@@ -43,13 +43,19 @@ func (k Keeper) GetNetAmountState(ctx sdk.Context) (nas *types.NetAmountState, e
 		}
 	}
 
+	balance, err := k.GetProxyAccBalance(ctx, types.LiquidStakeProxyAcc)
+
+	if err != nil {
+		return nil, err
+	}
+
 	nas = &types.NetAmountState{
 		StkxprtTotalSupply:    k.bankKeeper.GetSupply(ctx, k.LiquidBondDenom(ctx)).Amount,
 		TotalDelShares:        totalDelShares,
 		TotalLiquidTokens:     totalLiquidTokens,
 		TotalRemainingRewards: totalRemainingRewards,
 		TotalUnbondingBalance: totalUnbondingBalance,
-		ProxyAccBalance:       k.GetProxyAccBalance(ctx, types.LiquidStakeProxyAcc).Amount,
+		ProxyAccBalance:       balance.Amount,
 	}
 
 	nas.NetAmount = nas.CalcNetAmount()
@@ -916,9 +922,10 @@ func (k Keeper) LiquidUnbond(
 		return time.Time{}, math.ZeroInt(), stakingtypes.UnbondingDelegation{}, stakingtypes.ErrNoDelegatorForAddress
 	}
 
-	// If checkMaxEntries is true, perform a maximum limit unbonding entries check.
-	//TODO: maybe? fix
-	hasMax, _ := k.stakingKeeper.HasMaxUnbondingDelegationEntries(ctx, liquidStaker, valAddr)
+	hasMax, error := k.stakingKeeper.HasMaxUnbondingDelegationEntries(ctx, liquidStaker, valAddr)
+	if error != nil {
+		return time.Time{}, math.ZeroInt(), stakingtypes.UnbondingDelegation{}, error
+	}
 
 	if checkMaxEntries && hasMax {
 		return time.Time{}, math.ZeroInt(), stakingtypes.UnbondingDelegation{}, stakingtypes.ErrMaxUnbondingDelegationEntries
@@ -1175,7 +1182,6 @@ func (k Keeper) GetLiquidValidatorState(ctx sdk.Context, addr sdk.ValAddress) (l
 func (k Keeper) IsActiveLiquidValidator(ctx sdk.Context, lv types.LiquidValidator, whitelistedValsMap types.WhitelistedValsMap) bool {
 	val, err := k.stakingKeeper.GetValidator(ctx, lv.GetOperator())
 	if err != nil {
-		//TODO: maybe? fix
 		return false
 	}
 	return types.ActiveCondition(val, whitelistedValsMap.IsListed(lv.OperatorAddress), k.IsTombstoned(ctx, val))

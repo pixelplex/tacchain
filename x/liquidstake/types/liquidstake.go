@@ -60,8 +60,7 @@ func (v LiquidValidator) GetLiquidTokens(ctx sdk.Context, sk StakingKeeper, only
 	}
 	val, err := sk.Validator(ctx, v.GetOperator())
 	if err != nil {
-		//TODO: fix
-		panic(-1)
+		return math.ZeroInt()
 	}
 	if onlyBonded && !val.IsBonded() {
 		return math.ZeroInt()
