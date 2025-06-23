@@ -13,4 +13,4 @@ cd ..
 cp -r github.com/persistenceOne/pstake-native/v*/* ./
 rm -rf github.com
 
-go mod tidy
+#go mod tidy
