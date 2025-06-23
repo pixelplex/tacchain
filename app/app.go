@@ -1052,6 +1052,7 @@ func (a *TacChainApp) Configurator() module.Configurator {
 
 // InitChainer application update at chain initialization
 func (app *TacChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+	app.Erc20Keeper.SetTokenPair(ctx, GTACTokenPair)
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
@@ -1120,10 +1121,21 @@ func (app *TacChainApp) AutoCliOpts() autocli.AppOptions {
 func (app *TacChainApp) DefaultGenesis() map[string]json.RawMessage {
 	genesis := app.BasicModuleManager.DefaultGenesis(app.appCodec)
 
+	// Mint denom configuration
+	mintGenState := minttypes.DefaultGenesisState()
+	mintGenState.Params.MintDenom = BaseDenom
+	genesis[minttypes.ModuleName] = app.appCodec.MustMarshalJSON(mintGenState)
+
+	// EVM genesis configuration
 	evmGenState := evmd.NewEVMGenesisState()
+	evmGenState.Params.ActiveStaticPrecompiles = evmvmtypes.AvailableStaticPrecompiles
 	genesis[evmvmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
 
+	// ERC20 genesis configuration
 	erc20GenState := evmerc20types.DefaultGenesisState()
+	erc20GenState.TokenPairs = TacTokenPairs
+	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTACContract)
+	erc20GenState.Params.EnableErc20 = true
 	genesis[evmerc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
 	return genesis
