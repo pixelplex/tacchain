@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -583,11 +582,6 @@ func NewTacChainApp(
 		app.AuthzKeeper,
 		&app.TransferKeeper,
 	)
-
-	app.Erc20Keeper.RegisterERC20(context.Background(), &evmerc20types.MsgRegisterERC20{
-		Authority:      authAddr,
-		Erc20Addresses: []string{WTACContract},
-	})
 
 	// instantiate IBC transfer keeper AFTER the ERC-20 keeper to use it in the instantiation
 	app.TransferKeeper = evmibctransferkeeper.NewKeeper(
