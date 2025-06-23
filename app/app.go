@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -583,6 +584,11 @@ func NewTacChainApp(
 		&app.TransferKeeper,
 	)
 
+	app.Erc20Keeper.RegisterERC20(context.Background(), &evmerc20types.MsgRegisterERC20{
+		Authority:      authAddr,
+		Erc20Addresses: []string{WTACContract},
+	})
+
 	// instantiate IBC transfer keeper AFTER the ERC-20 keeper to use it in the instantiation
 	app.TransferKeeper = evmibctransferkeeper.NewKeeper(
 		encodingConfig.Codec,
@@ -1088,10 +1094,21 @@ func (app *TacChainApp) AutoCliOpts() autocli.AppOptions {
 func (app *TacChainApp) DefaultGenesis() map[string]json.RawMessage {
 	genesis := app.BasicModuleManager.DefaultGenesis(app.appCodec)
 
+	// Mint denom configuration
+	mintGenState := minttypes.DefaultGenesisState()
+	mintGenState.Params.MintDenom = BaseDenom
+	genesis[minttypes.ModuleName] = app.appCodec.MustMarshalJSON(mintGenState)
+
+	// EVM genesis configuration
 	evmGenState := evmd.NewEVMGenesisState()
+	evmGenState.Params.ActiveStaticPrecompiles = evmvmtypes.AvailableStaticPrecompiles
 	genesis[evmvmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
 
+	// ERC20 genesis configuration
 	erc20GenState := evmerc20types.DefaultGenesisState()
+	erc20GenState.TokenPairs = TacTokenPairs
+	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTACContract)
+	erc20GenState.Params.EnableErc20 = true
 	genesis[evmerc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
 	return genesis
