@@ -1020,6 +1020,7 @@ func (a *TacChainApp) Configurator() module.Configurator {
 
 // InitChainer application update at chain initialization
 func (app *TacChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+	app.Erc20Keeper.SetTokenPair(ctx, GTACTokenPair)
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
