@@ -13,6 +13,7 @@ import (
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 
 	abci "github.com/cometbft/cometbft/abci/types"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/cosmos/ibc-go/modules/capability"
@@ -984,6 +985,10 @@ func NewTacChainApp(
 		}
 	}
 
+	app.initErc20TokenPair(app.NewUncachedContext(false, cmtproto.Header{}))
+
+	app.initLiquidStakeModule(app.NewUncachedContext(false, cmtproto.Header{}))
+
 	return app
 }
 
@@ -1052,7 +1057,6 @@ func (a *TacChainApp) Configurator() module.Configurator {
 
 // InitChainer application update at chain initialization
 func (app *TacChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
-	app.Erc20Keeper.SetTokenPair(ctx, GTACTokenPair)
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
@@ -1061,6 +1065,7 @@ func (app *TacChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain)
 	if err != nil {
 		panic(err)
 	}
+
 	response, err := app.ModuleManager.InitGenesis(ctx, app.appCodec, genesisState)
 	return response, err
 }
@@ -1137,6 +1142,11 @@ func (app *TacChainApp) DefaultGenesis() map[string]json.RawMessage {
 	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTACContract)
 	erc20GenState.Params.EnableErc20 = true
 	genesis[evmerc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
+
+	// Liquidstake
+	lsGenState := liquidstaketypes.DefaultGenesisState()
+	lsGenState.Params.ModulePaused = false
+	genesis[liquidstaketypes.ModuleName] = app.appCodec.MustMarshalJSON(lsGenState)
 
 	return genesis
 }
@@ -1227,6 +1237,18 @@ func (app *TacChainApp) RegisterTendermintService(clientCtx client.Context) {
 
 func (app *TacChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
+}
+
+func (app *TacChainApp) initErc20TokenPair(ctx sdk.Context) {
+	for _, pair := range TacTokenPairs {
+		app.Erc20Keeper.SetToken(ctx, pair)
+	}
+}
+
+func (app *TacChainApp) initLiquidStakeModule(ctx sdk.Context) {
+	params := app.LiquidstakeKeeper.GetParams(ctx)
+	params.ModulePaused = false
+	app.LiquidstakeKeeper.SetParams(ctx, params)
 }
 
 // GetMaccPerms returns a copy of the module account permissions
