@@ -184,7 +184,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/mmcloughlin/addchain v0.4.0 // indirect
+	github.com/mmcloughlin/addchain v0.4.0 // indirect; indirect;
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
@@ -277,7 +277,7 @@ replace (
 
 	// // use Cosmos-SDK fork to enable Ledger functionality
 	// github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.50.13-0.20250319183239-53dea340efc7
-	github.com/cosmos/cosmos-sdk => gitlab.pixelplexlabs.com/862-tac/cosmos-sdk v0.0.0-20250617165712-c53a1019ecfd
+	github.com/cosmos/cosmos-sdk => github.com/pixelplex/cosmos-sdk v0.0.0-20250617165712-c53a1019ecfd
 
 	// replace cosmos evm with our fork that uses geth v1.13.15
 	github.com/cosmos/evm => github.com/TacBuild/evm v0.0.0-20250604085412-f683909f629c

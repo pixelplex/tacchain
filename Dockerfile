@@ -1,21 +1,27 @@
 # docker build . -t tacchaind:latest
 # docker run --rm -it tacchaind:latest tacchaind --help
 
-FROM golang:1.23.8-alpine3.20 AS go-builder
+FROM golang:1.23.8-bullseye AS go-builder
 
-# this comes from standard alpine nightly file
-#  https://github.com/rust-lang/docker-rust-nightly/blob/master/alpine3.12/Dockerfile
-# with some changes to support our toolchain, etc
-RUN set -eux; apk add --no-cache ca-certificates build-base libusb-dev linux-headers;
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    build-essential \
+    git \
+    curl \
+    wget \
+    libusb-1.0-0-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
 COPY . /code/
 
-RUN LEDGER_ENABLED=true make build
+# force it to use static lib (from above) not standard libgo_cosmwasm.so file
+RUN make build
+RUN LEDGER_ENABLED=false make build
 
-
-# --------------------------------------------------------
-FROM alpine:3.18
+FROM ubuntu:22.04
 
 COPY --from=go-builder /code/build/tacchaind /usr/bin/tacchaind
 
