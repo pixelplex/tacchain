@@ -95,10 +95,10 @@ This example guide connects to mainnet. You can replace `chain-id`, `persistent_
   - lz4
   - wget
 
-#### 1. Install `tacchaind` [v0.0.11](https://github.com/TacBuild/tacchain/tree/v0.0.11)
+#### 1. Install `tacchaind` [v1.0.0](https://github.com/TacBuild/tacchain/tree/v1.0.0)
 
 ``` shell
-git checkout v0.0.11
+git checkout v1.0.0
 make install
 ```
 
@@ -153,7 +153,7 @@ tacchaind start --chain-id tacchain_239-1 --home .mainnet
 
 ``` shell
 export TAC_HOME="~/.tacchain"
-export VERSION="v0.0.11"
+export VERSION="v1.0.0"
 
 git clone https://github.com/TacBuild/tacchain.git && cd tacchain
 git checkout ${VERSION}
