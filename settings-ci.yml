@@ -11,7 +11,7 @@ deploy:
 
 apps:
   tac:
-    image: golang:1.23.8-alpine3.20
+    image: golang:1.23.8-bullseye
     runner_tags:
       - docker
     code_analysis: false
