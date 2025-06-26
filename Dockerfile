@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     wget \
     libusb-1.0-0-dev \
+    libc6 \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
