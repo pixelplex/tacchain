@@ -24,8 +24,20 @@ RUN LEDGER_ENABLED=false make build
 FROM ubuntu:22.04
 
 COPY --from=go-builder /code/build/tacchaind /usr/bin/tacchaind
+# To run a localnet --------------------------------------
+COPY --from=go-builder /code/contrib/localnet/init.sh /scripts/init.sh
+COPY --from=go-builder /code/contrib/localnet/start.sh /scripts/start.sh
+RUN chmod +x /scripts/*.sh
 
-WORKDIR /opt
+RUN apt-get update && apt-get install -y \
+    wget \
+    jq \
+    bc \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v2.1.0/libwasmvm.x86_64.so
+
+WORKDIR /scripts
 
 # rest server
 EXPOSE 1317

@@ -1,18 +1,16 @@
 services:
-  tac-spb-testnet-init:
-    user: "1000:1000"
+  tac-localnet-init:
     build:
       dockerfile: Dockerfile
     volumes:
-      - "./tacchain:/data"
+      - "/mnt/data:/tacchain_data"
     entrypoint: sh
     command: /scripts/init.sh
     environment:
       - MONIKER=tac-validator
-      - HOMEDIR=/data/
+      - HOMEDIR=/tacchain_data
 
-  tac-spb-testnet-validator-1:
-    user: "1000:1000"
+  tac-localnet-validator:
     network_mode: host
     restart: unless-stopped
     build:
@@ -25,12 +23,12 @@ services:
       - "8546:8546"    # WS_EVM
       - "9090:9090"    # gRPC
     volumes:
-      - "./tacchain:/data"
+      - "/mnt/data:/tacchain_data"
     depends_on:
-      tac-spb-testnet-init:
+      tac-localnet-init:
         condition: service_completed_successfully
     entrypoint: sh
     command: /scripts/start.sh
     environment:
       - MONIKER=tac-validator
-      - HOMEDIR=/data/
+      - HOMEDIR=/tacchain_data
