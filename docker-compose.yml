@@ -1,7 +1,6 @@
 services:
   tac-localnet-init:
-    build:
-      dockerfile: Dockerfile
+    image: ${IMAGE}
     volumes:
       - "/mnt/data:/tacchain_data"
     entrypoint: sh
@@ -13,8 +12,7 @@ services:
   tac-localnet-validator:
     network_mode: host
     restart: unless-stopped
-    build:
-      dockerfile: Dockerfile
+    image: ${IMAGE}
     ports:
       - "26656:26656"  # P2P
       - "26657:26657"  # RPC
