@@ -18,5 +18,5 @@ apps:
     build: false
     docker_build:
       runner_tags:
-        - docker
+        - tac-localchain-1
     test_docker: false

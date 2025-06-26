@@ -1,7 +1,7 @@
 # docker build . -t tacchaind:latest
 # docker run --rm -it tacchaind:latest tacchaind --help
 
-FROM golang:1.23.8-bullseye AS go-builder
+FROM golang:1.23.8-bookworm AS go-builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
