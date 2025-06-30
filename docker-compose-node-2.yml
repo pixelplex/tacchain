@@ -3,7 +3,6 @@ services:
     image: ${IMAGE}
     volumes:
       - "/mnt/data:/tacchain_data"
-      - "./genesis.json:/tacchain_data/config/genesis.json"
     entrypoint: sh
     command: /scripts/init.sh
     environment:
