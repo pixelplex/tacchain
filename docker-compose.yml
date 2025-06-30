@@ -10,7 +10,7 @@ services:
       - MONIKER=tac-validator
       - HOMEDIR=/tacchain_data
 
-  node1:
+  validator-1:
     network_mode: host
     restart: unless-stopped
     image: ${IMAGE}
@@ -37,7 +37,7 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45118
       - JSON_RPC_WS_ADDR=0.0.0.0:45119
 
-  node2:
+  validator-2:
     network_mode: host
     restart: unless-stopped
     image: ${IMAGE}
@@ -64,7 +64,7 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45128
       - JSON_RPC_WS_ADDR=0.0.0.0:45129
   
-  node3:
+  validator-3:
     network_mode: host
     restart: unless-stopped
     image: ${IMAGE}
@@ -91,7 +91,7 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45138
       - JSON_RPC_WS_ADDR=0.0.0.0:45139
 
-  node4:
+  validator-4:
     network_mode: host
     restart: unless-stopped
     image: ${IMAGE}
