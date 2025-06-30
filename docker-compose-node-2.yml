@@ -94,9 +94,7 @@ services:
   node4:
     network_mode: host
     restart: unless-stopped
-    build:
-      dockerfile: Dockerfile
-      context: .
+    image: ${IMAGE}
     ports:
       - "45140:45140"  # P2P
       - "45141:45141"  # RPC
