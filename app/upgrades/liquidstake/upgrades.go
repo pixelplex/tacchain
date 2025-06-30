@@ -1,4 +1,4 @@
-package v011
+package liquidstake_upgrade
 
 import (
 	"context"
@@ -11,13 +11,13 @@ import (
 )
 
 // UpgradeName defines the on-chain upgrade name
-const UpgradeName = "v0.0.11"
+const UpgradeName = "liquidstake"
 
 var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: storetypes.StoreUpgrades{
-		Added:   []string{},
+		Added:   []string{"liquidstake"},
 		Deleted: []string{},
 	},
 }
