@@ -3,11 +3,19 @@ trufflehog_ignore: true
 
 deploy:
   environment:
-    tacchain:
+    tacchain-node-1:
       branch: localnet
       docker_compose: true
+      docker_compose_file: docker-compose-node-1.yml   
       runner_tags: 
         - tac-localchain-1
+    tacchain-node-2:
+      branch: localnet
+      docker_compose: true
+      docker_compose_file: docker-compose-node-2.yml   
+      runner_tags: 
+        - tac-localchain-2
+      manual: true
 
 apps:
   tac:

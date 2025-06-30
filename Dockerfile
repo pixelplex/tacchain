@@ -28,6 +28,7 @@ COPY --from=go-builder /code/build/tacchaind /usr/bin/tacchaind
 # To run a localnet --------------------------------------
 COPY --from=go-builder /code/contrib/localnet/init.sh /scripts/init.sh
 COPY --from=go-builder /code/contrib/localnet/start.sh /scripts/start.sh
+COPY --from=go-builder /code/contrib/localnet/start-additional-node.sh /scripts/start-additional-node.sh
 RUN chmod +x /scripts/*.sh
 
 RUN apt-get update && apt-get install -y \
