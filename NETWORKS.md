@@ -81,7 +81,7 @@ curl https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/network
 tacchaind start --chain-id tacchain_239-1 --home .mainnet
 ```
 
-### Join Tac Mainnet Using Official Snapshots (TBD)
+### Join Tac Mainnet Using Official Snapshots
 
 This example guide connects to mainnet. You can replace `chain-id`, `persistent_peers`, `genesis url` with the network you want to join. `--home` flag specifies the path to be used. The example will create [.mainnet](.mainnet) folder.
 
@@ -129,7 +129,7 @@ curl https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/network
 ``` sh
 cd .mainnet
 rm -rf data
-wget TBD
+wget http://snapshot.tac.ankr.com/tac-mainnet-full-latest.tar.lz4
 lz4 -dc < tac-mainnet-full-latest.tar.lz4 | tar -xvf -
 ```
 
@@ -363,7 +363,7 @@ make install
 tacchaind start --chain-id tacchain_2391-1 --home .testnet
 ```
 
-### Join Tac Saint Petersburg Testnet Using Official Snapshots (TBD)
+### Join Tac Saint Petersburg Testnet Using Official Snapshots
 
 This example guide connects to testnet. You can replace `chain-id`, `persistent_peers`, `genesis url` with the network you want to join. `--home` flag specifies the path to be used. The example will create [.testnet](.testnet) folder.
 
@@ -411,7 +411,7 @@ curl https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/network
 ``` sh
 cd .testnet
 rm -rf data
-wget TBD
+wget http://snapshot.tac.ankr.com/tac-spb-full-latest.tar.lz4
 lz4 -dc < tac-spb-full-latest.tar.lz4 | tar -xvf -
 ```
 
@@ -564,7 +564,7 @@ pex = false
 | Snapshots                   | http://snapshot.tac.ankr.com/tac-{mainnet,spb,turin}-archive-latest.{tar.lz4,shasum}          |
 | - full                      | http://snapshot.tac.ankr.com/tac-turin-full-latest.tar.lz4                                    |
 | - archive                   | http://snapshot.tac.ankr.com/tac-turin-archive-latest.tar.lz4                                 |
-| Frontend                    | TBD                                                                                           |
+| Staking UI                  | https://staking.spb.tac.build/                                                                |
 
 #### Hardware Requirements
 
