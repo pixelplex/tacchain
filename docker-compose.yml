@@ -1,43 +1,119 @@
 services:
-  tac-spb-testnet-init:
-    user: "${USER_ID}:${GROUP_ID}"
+  init:
     image: ${IMAGE}
     volumes:
-      - "/mnt/data:/data"
-    entrypoint: /bin/sh
-    command: >
-      -c "[ ! -e /data/config/config.toml ] && tacchaind init testnode --chain-id tacchain_2391-1 --home /data && cd /data/config && rm genesis.json && wget https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/networks/tacchain_2391-1/genesis.json || exit 0"
+      - "/mnt/data:/tacchain_data"
+    entrypoint: bash
+    command: /scripts/init-multi-node.sh
+    environment:
+      - CHAIN_ID=tacchain_2391-1
+      - MONIKER=tac-validator
+      - HOMEDIR=/tacchain_data
 
-  tac-spb-testnet-validator-1:
-    user: "${USER_ID}:${GROUP_ID}"
+  validator-1:
     network_mode: host
     restart: unless-stopped
     image: ${IMAGE}
     ports:
-      - "26656:26656"  # P2P
-      - "26657:26657"  # RPC
-      - "1317:1317"    # REST
-      - "8545:8545"    # RPC_EVM
-      - "8546:8546"    # WS_EVM
-      - "9090:9090"    # GRPC
+      - "45110:45110"  # P2P
+      - "45111:45111"  # RPC
+      - "45112:45112"  # REST
+      - "45118:45118"  # RPC_EVM
+      - "45119:45119"  # WS_EVM
     volumes:
-      - "/mnt/data:/data"
+      - "/mnt/data/node0:/tacchain_data/node0"
     depends_on:
-      tac-spb-testnet-init:
+     init:
         condition: service_completed_successfully
-    entrypoint: tacchaind
-    command: >
-      start
-      --chain-id=tacchain_2391-1
-      --home=/data
-      --db_dir=data
-      --log_level=info
-      --p2p.persistent_peers=${P2P_PERSISTENT_PEERS}
-      --p2p.laddr=tcp://0.0.0.0:${P2P_PORT}
-      --p2p.external-address=${EXT_IP}:${P2P_PORT}
-      --rpc.laddr=tcp://0.0.0.0:${RPC_PORT}
-      --json-rpc.address=0.0.0.0:${RPC_PORT_EVM}
-      --json-rpc.ws-address=0.0.0.0:${WS_PORT_EVM}
-      --grpc.enable
-      --grpc-web.enable
-      --rpc.grpc_laddr=tcp://0.0.0.0:${GRPC_PORT}
+    entrypoint: sh
+    command: /scripts/start.sh
+    environment:
+      - CHAIN_ID=tacchain_2391-1
+      - MONIKER=tac-validator
+      - HOMEDIR=/tacchain_data/node0
+      - P2P_LADDR=tcp://0.0.0.0:45110
+      - P2P_EXTERNAL_ADDRESS=0.0.0.0:45110
+      - RPC_LADDR=tcp://0.0.0.0:45111
+      - JSON_RPC_ADDR=0.0.0.0:45118
+      - JSON_RPC_WS_ADDR=0.0.0.0:45119
+
+  validator-2:
+    network_mode: host
+    restart: unless-stopped
+    image: ${IMAGE}
+    ports:
+      - "45120:45120"  # P2P
+      - "45121:45121"  # RPC
+      - "45122:45122"  # REST
+      - "45128:45128"  # RPC_EVM
+      - "45129:45129"  # WS_EVM
+    volumes:
+      - "/mnt/data/node1:/tacchain_data/node1"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    entrypoint: sh
+    command: /scripts/start.sh
+    environment:
+      - CHAIN_ID=tacchain_2391-1
+      - MONIKER=tac-validator
+      - HOMEDIR=/tacchain_data/node1
+      - P2P_LADDR=tcp://0.0.0.0:45120
+      - P2P_EXTERNAL_ADDRESS=0.0.0.0:45120
+      - RPC_LADDR=tcp://0.0.0.0:45121
+      - JSON_RPC_ADDR=0.0.0.0:45128
+      - JSON_RPC_WS_ADDR=0.0.0.0:45129
+  
+  validator-3:
+    network_mode: host
+    restart: unless-stopped
+    image: ${IMAGE}
+    ports:
+      - "45130:45130"  # P2P
+      - "45131:45131"  # RPC
+      - "45132:45132"  # REST
+      - "45138:45138"  # RPC_EVM
+      - "45139:45139"  # WS_EVM
+    volumes:
+      - "/mnt/data/node2:/tacchain_data/node2"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    entrypoint: sh
+    command: /scripts/start.sh
+    environment:
+      - CHAIN_ID=tacchain_2391-1
+      - MONIKER=tac-validator
+      - HOMEDIR=/tacchain_data/node2
+      - P2P_LADDR=tcp://0.0.0.0:45130
+      - P2P_EXTERNAL_ADDRESS=0.0.0.0:45130
+      - RPC_LADDR=tcp://0.0.0.0:45131
+      - JSON_RPC_ADDR=0.0.0.0:45138
+      - JSON_RPC_WS_ADDR=0.0.0.0:45139
+
+  validator-4:
+    network_mode: host
+    restart: unless-stopped
+    image: ${IMAGE}
+    ports:
+      - "45140:45140"  # P2P
+      - "45141:45141"  # RPC
+      - "45142:45142"  # REST
+      - "45148:45148"  # RPC_EVM
+      - "45149:45149"  # WS_EVM
+    volumes:
+      - "/mnt/data/node3:/tacchain_data/node3"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    entrypoint: sh
+    command: /scripts/start.sh
+    environment:
+      - CHAIN_ID=tacchain_2391-1
+      - MONIKER=tac-validator
+      - HOMEDIR=/tacchain_data/node3
+      - P2P_LADDR=tcp://0.0.0.0:45140
+      - P2P_EXTERNAL_ADDRESS=0.0.0.0:45140
+      - RPC_LADDR=tcp://0.0.0.0:45141
+      - JSON_RPC_ADDR=0.0.0.0:45148
+      - JSON_RPC_WS_ADDR=0.0.0.0:45149

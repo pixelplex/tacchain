@@ -4,14 +4,15 @@ trufflehog_ignore: true
 deploy:
   environment:
     tacchain:
-      branch: main
+      branch: localnet
       docker_compose: true
       runner_tags: 
-        - taccnetwork-dev
+        - tac-localchain-2
+      manual: true
 
 apps:
   tac:
-    image: golang:1.23.8-alpine3.20
+    image: golang:1.23.8-bullseye
     runner_tags:
       - docker
     code_analysis: false
