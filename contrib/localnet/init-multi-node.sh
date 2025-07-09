@@ -10,9 +10,9 @@ export VALIDATOR_NAME=${VALIDATOR_NAME:-TAC Validator}
 export VALIDATOR_IDENTITY=${VALIDATOR_IDENTITY:-4DD1A5E1D03FA12D}
 export VALIDATOR_WEBSITE=${VALIDATOR_WEBSITE:-https://tac.build/}
 export VALIDATOR_1_MNEMONIC=${VALIDATOR_1_MNEMONIC:-"island mail dice alien project surround orchard ball twist worth innocent arrange assume dragon rotate enough flee rapid rookie swim addict ice destroy run"} # tac15lvhklny0khnwy7hgrxsxut6t6ku2cgknw79fr
-export VALIDATOR_2_MNEMONIC=${VALIDATOR_2_MNEMONIC:-"margin funny awkward answer squirrel inner venue spell expose close tank salute series neck oval real bunker can text chronic capital teach arena extend"} # tac16p9nqhd348aaungp5p5vjuwedaw03pvywdzwdk
-export VALIDATOR_3_MNEMONIC=${VALIDATOR_3_MNEMONIC:-"that away spike absorb aspect loan shuffle purchase number knock cover night library shock mask cheese upset float churn wall fox veteran actress motor"} # tac1qp4h82jgqqa5ezgzck8z75dn8q0t0nv45pzh6v
-export VALIDATOR_4_MNEMONIC=${VALIDATOR_4_MNEMONIC:-"floor wrong idle cloth nose material forward urge grape always into buyer atom excuse odor decade crouch purchase shadow energy voyage pact skate pigeon"} # tac1d30q62hl0wn6n5m39sd0yqswq6jr3hntt2cm4n
+export VALIDATOR_2_MNEMONIC=${VALIDATOR_2_MNEMONIC:-"margin funny awkward answer squirrel inner venue spell expose close tank salute series neck oval real bunker can text chronic capital teach arena extend"}    # tac16p9nqhd348aaungp5p5vjuwedaw03pvywdzwdk
+export VALIDATOR_3_MNEMONIC=${VALIDATOR_3_MNEMONIC:-"that away spike absorb aspect loan shuffle purchase number knock cover night library shock mask cheese upset float churn wall fox veteran actress motor"}     # tac1qp4h82jgqqa5ezgzck8z75dn8q0t0nv45pzh6v
+export VALIDATOR_4_MNEMONIC=${VALIDATOR_4_MNEMONIC:-"floor wrong idle cloth nose material forward urge grape always into buyer atom excuse odor decade crouch purchase shadow energy voyage pact skate pigeon"}    # tac1d30q62hl0wn6n5m39sd0yqswq6jr3hntt2cm4n
 export GENESIS_ACC_1_ADDRESS=${GENESIS_ACC_1_ADDRESS:-}
 export GENESIS_ACC_2_ADDRESS=${GENESIS_ACC_2_ADDRESS:-}
 export INITIAL_SUPPLY=${INITIAL_SUPPLY:-10000000000000000000000000000}
@@ -33,8 +33,8 @@ export MAX_VALIDATORS=${MAX_VALIDATORS:-14}
 # prompt user for confirmation before cleanup
 read -p "This will remove all existing data in $HOMEDIR. Do you want to proceed? (y/n): " confirm
 if [[ $confirm != "y" && $confirm != "Y" ]]; then
-    echo "Cleanup aborted."
-    exit 1
+  echo "Cleanup aborted."
+  exit 1
 fi
 
 # cleanup old data
@@ -62,38 +62,38 @@ GENESIS_ACC_2_BALANCE=10000000000000000000000
 GENESIS_ACC_1_BALANCE=$(echo "$INITIAL_SUPPLY - ($VALIDATOR_BALANCE * $VALIDATORS_COUNT) - $GENESIS_ACC_2_BALANCE" | bc)
 
 # initialize config folder for each validator
-for ((i = 0 ; i < VALIDATORS_COUNT ; i++)); do
+for ((i = 0; i < VALIDATORS_COUNT; i++)); do
   NODE_KEY="node$i"
   NODEDIR="$HOMEDIR/$NODE_KEY"
 
   # set ports
-  export P2P_PORT=451$((i+1))0        # 45110
-  export RPC_PORT=451$((i+1))1        # 45111
-  export API_PORT=451$((i+1))2        # 45112
-  export METRICS_PORT=451$((i+1))3    # 45113
-  export PPROF_PORT=451$((i+1))4      # 45114
-  export PROMETHEUS_PORT=451$((i+1))5 # 45115
-  export GRPC_WEB_PORT=451$((i+1))6   # 45116
-  export GRPC_PORT=451$((i+1))7       # 45117
-  export JSON_RPC_PORT=451$((i+1))8   # 45118
-  export JSON_WS_PORT=451$((i+1))9    # 45119
-  export PROXY_PORT=451$((i+1))10     # 451110
+  export P2P_PORT=451$((i + 1))0        # 45110
+  export RPC_PORT=451$((i + 1))1        # 45111
+  export API_PORT=451$((i + 1))2        # 45112
+  export METRICS_PORT=451$((i + 1))3    # 45113
+  export PPROF_PORT=451$((i + 1))4      # 45114
+  export PROMETHEUS_PORT=451$((i + 1))5 # 45115
+  export GRPC_WEB_PORT=451$((i + 1))6   # 45116
+  export GRPC_PORT=451$((i + 1))7       # 45117
+  export JSON_RPC_PORT=451$((i + 1))8   # 45118
+  export JSON_WS_PORT=451$((i + 1))9    # 45119
+  export PROXY_PORT=451$((i + 1))10     # 451110
 
   export NODE_MONIKER="$VALIDATOR_NAME $((i + 1))"
-  
+
   export INITIAL_BALANCE=$VALIDATOR_BALANCE
   export INITIAL_STAKE=$VALIDATOR_SELF_DELEGATION
 
   # dynamically get mnemonic env var for each validator
-  mnemonic_var="VALIDATOR_$((i+1))_MNEMONIC"
+  mnemonic_var="VALIDATOR_$((i + 1))_MNEMONIC"
   export VALIDATOR_MNEMONIC="${!mnemonic_var}"
 
   # call init.sh script to initialize the node
-  echo y | HOMEDIR=$NODEDIR $(dirname "$0")/./init.sh
+  echo y | HOMEDIR=$NODEDIR $(dirname "$0")/./init-liquidstake-for-multinode.sh
 
   # explicitly add balances to first node(node0) which will be used to collect gentxs later
   ADDRESS=$($TACCHAIND keys show validator --keyring-backend $KEYRING_BACKEND --home $NODEDIR -a)
-  $TACCHAIND genesis add-genesis-account $ADDRESS ${VALIDATOR_BALANCE}utac --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0  &> /dev/null || true
+  $TACCHAIND genesis add-genesis-account $ADDRESS ${VALIDATOR_BALANCE}utac --keyring-backend $KEYRING_BACKEND --home $HOMEDIR/node0 &>/dev/null || true
 
   # copy gentx into main gentxs
   cp $NODEDIR/config/gentx/* "$HOMEDIR/gentxs/"
@@ -117,29 +117,29 @@ $TACCHAIND genesis add-genesis-account $GENESIS_ACC_2_ADDRESS ${GENESIS_ACC_2_BA
 cp $HOMEDIR/gentxs/* "$HOMEDIR/node0/config/gentx/"
 
 # clear gentx in genesis because we already collect in init.sh, so recollect here instead changing the original script
-jq '.app_state.genutil.gen_txs = []' "$HOMEDIR/node0/config/genesis.json" > "$HOMEDIR/node0/config/genesis_tmp.json" && mv "$HOMEDIR/node0/config/genesis_tmp.json" "$HOMEDIR/node0/config/genesis.json"
+jq '.app_state.genutil.gen_txs = []' "$HOMEDIR/node0/config/genesis.json" >"$HOMEDIR/node0/config/genesis_tmp.json" && mv "$HOMEDIR/node0/config/genesis_tmp.json" "$HOMEDIR/node0/config/genesis.json"
 
 $TACCHAIND genesis collect-gentxs --home $HOMEDIR/node0
 
 # copy genesis to main directory for reference
 cp $HOMEDIR/node0/config/genesis.json $HOMEDIR/genesis.json
 
-for ((i = 0 ; i < VALIDATORS_COUNT ; i++)); do
+for ((i = 0; i < VALIDATORS_COUNT; i++)); do
   # copy final genesis to all validators
-  cp $HOMEDIR/node0/config/genesis.json $HOMEDIR/node$i/config/genesis.json &> /dev/null || true
-  
+  cp $HOMEDIR/node0/config/genesis.json $HOMEDIR/node$i/config/genesis.json &>/dev/null || true
+
   # update persistent peers
   PERSISTENT_PEERS=""
   CURRENT_PEER=0
-  for ((j = 0 ; j < VALIDATORS_COUNT ; j++)); do
+  for ((j = 0; j < VALIDATORS_COUNT; j++)); do
     # add all nodes except the current one
     if [ "$i" != "$j" ]; then
       CURRENT_PEER=$((CURRENT_PEER + 1))
       NODE_ID=$($TACCHAIND tendermint show-node-id --home $HOMEDIR/node$j)
-      P2P_PORT=451$((j+1))0
+      P2P_PORT=451$((j + 1))0
       PERSISTENT_PEERS+=$NODE_ID@127.0.0.1:$P2P_PORT
       # add comma if not last node
-      if [ "$CURRENT_PEER" != "$((VALIDATORS_COUNT-1))" ]; then
+      if [ "$CURRENT_PEER" != "$((VALIDATORS_COUNT - 1))" ]; then
         PERSISTENT_PEERS+=","
       fi
     fi
