@@ -1,6 +1,8 @@
 services:
   init:
-    image: ${IMAGE}
+    build:
+      dockerfile: Dockerfile
+      context: .
     volumes:
       - "/mnt/data:/tacchain_data"
     entrypoint: bash
@@ -13,7 +15,9 @@ services:
   validator-1:
     network_mode: host
     restart: unless-stopped
-    image: ${IMAGE}
+    build:
+      dockerfile: Dockerfile
+      context: .
     ports:
       - "45110:45110"  # P2P
       - "45111:45111"  # RPC
@@ -40,7 +44,9 @@ services:
   validator-2:
     network_mode: host
     restart: unless-stopped
-    image: ${IMAGE}
+    build:
+      dockerfile: Dockerfile
+      context: .
     ports:
       - "45120:45120"  # P2P
       - "45121:45121"  # RPC
@@ -67,7 +73,9 @@ services:
   validator-3:
     network_mode: host
     restart: unless-stopped
-    image: ${IMAGE}
+    build:
+      dockerfile: Dockerfile
+      context: .
     ports:
       - "45130:45130"  # P2P
       - "45131:45131"  # RPC
@@ -94,7 +102,9 @@ services:
   validator-4:
     network_mode: host
     restart: unless-stopped
-    image: ${IMAGE}
+    build:
+      dockerfile: Dockerfile
+      context: .
     ports:
       - "45140:45140"  # P2P
       - "45141:45141"  # RPC

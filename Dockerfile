@@ -29,7 +29,7 @@ COPY --from=go-builder /code/build/tacchaind /usr/bin/tacchaind
 COPY --from=go-builder /code/contrib/localnet/init.sh /scripts/init.sh
 COPY --from=go-builder /code/contrib/localnet/init-multi-node.sh /scripts/init-multi-node.sh
 COPY --from=go-builder /code/contrib/localnet/start.sh /scripts/start.sh
-COPY --from=go-builder /code/contrib/localnet/start-additional-node.sh /scripts/start-additional-node.sh
+COPY --from=go-builder /code/contrib/localnet/init-liquidstake-for-multinode.sh /scripts/init-liquidstake-for-multinode.sh
 RUN chmod +x /scripts/*.sh
 
 RUN apt-get update && apt-get install -y \
