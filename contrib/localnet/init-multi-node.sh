@@ -30,13 +30,6 @@ export SLASH_DOWNTIME_PENALTY=${SLASH_DOWNTIME_PENALTY:-0.001}
 export SLASH_SIGNED_BLOCKS_WINDOW=${SLASH_SIGNED_BLOCKS_WINDOW:-21600}
 export MAX_VALIDATORS=${MAX_VALIDATORS:-14}
 
-# prompt user for confirmation before cleanup
-read -p "This will remove all existing data in $HOMEDIR. Do you want to proceed? (y/n): " confirm
-if [[ $confirm != "y" && $confirm != "Y" ]]; then
-  echo "Cleanup aborted."
-  exit 1
-fi
-
 # cleanup old data
 rm -rf $HOMEDIR
 
