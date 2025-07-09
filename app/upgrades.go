@@ -9,6 +9,7 @@ import (
 	v0010 "github.com/Asphere-xyz/tacchain/app/upgrades/v0.0.10"
 	v0011 "github.com/Asphere-xyz/tacchain/app/upgrades/v0.0.11"
 	v009 "github.com/Asphere-xyz/tacchain/app/upgrades/v0.0.9"
+	liquidstake_upgrade "github.com/Asphere-xyz/tacchain/app/upgrades/liquidstake"
 )
 
 // Upgrades list of chain upgrades
@@ -16,6 +17,7 @@ var Upgrades = []upgrades.Upgrade{
 	v009.Upgrade,
 	v0010.Upgrade,
 	v0011.Upgrade,
+	liquidstake_upgrade.Upgrade,
 }
 
 // RegisterUpgradeHandlers registers the chain upgrade handlers
@@ -28,6 +30,7 @@ func (app *TacChainApp) RegisterUpgradeHandlers() {
 		IBCKeeper:             app.IBCKeeper,
 		Codec:                 app.appCodec,
 		GetStoreKey:           app.GetKey,
+		LiquidsStakeKeeper:    &app.LiquidStakeKeeper,
 	}
 	app.GetStoreKeys()
 	// register all upgrade handlers

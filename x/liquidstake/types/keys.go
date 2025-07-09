@@ -14,7 +14,7 @@ const (
 
 	// StoreKey is the default store key for the liquidstake module
 	// To avoid collision with liquidstakeibc we make it xprtliquidstake
-	StoreKey = "xprt" + ModuleName
+	StoreKey = "utac" + ModuleName
 
 	// QuerierRoute is the querier route for the liquidstake module
 	QuerierRoute = ModuleName
