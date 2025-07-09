@@ -83,9 +83,18 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 							options.MaxTxGasWanted,
 						),
 					)
+				case "/cosmos.evm.types.v1.ExtensionOptionsWeb3Tx":
+					// handle as normal Cosmos SDK tx, except signature is checked for EIP712 representation
+					anteHandler, err = newCosmosAnteHandler(cosmosHandlerOptions{
+						HandlerOptions: options,
+						isEIP712:       true,
+					})
 				case "/cosmos.evm.types.v1.ExtensionOptionDynamicFeeTx":
 					// cosmos-sdk tx with dynamic fee extension
-					anteHandler, err = newCosmosAnteHandler(options)
+					anteHandler, err = newCosmosAnteHandler(cosmosHandlerOptions{
+						HandlerOptions: options,
+						isEIP712:       false,
+					})
 				default:
 					return ctx, errors.New(fmt.Sprintf("rejecting tx with unsupported extension option: %s", typeURL))
 				}
@@ -101,7 +110,10 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		// handle as totally normal Cosmos SDK tx
 		switch tx.(type) {
 		case sdk.Tx:
-			anteHandler, err = newCosmosAnteHandler(options)
+			anteHandler, err = newCosmosAnteHandler(cosmosHandlerOptions{
+				HandlerOptions: options,
+				isEIP712:       false,
+			})
 		default:
 			return ctx, errors.New("invalid transaction type")
 		}
@@ -114,8 +126,14 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	}, nil
 }
 
-func newCosmosAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
-	return sdk.ChainAnteDecorators(
+// cosmosHandlerOptions extends HandlerOptions to provide some Cosmos specific configurations
+type cosmosHandlerOptions struct {
+	HandlerOptions
+	isEIP712 bool
+}
+
+func newCosmosAnteHandler(options cosmosHandlerOptions) (sdk.AnteHandler, error) {
+	decorators := []sdk.AnteDecorator{
 		evmcosmosante.NewRejectMessagesDecorator(), // reject MsgEthereumTxs
 		evmcosmosante.NewAuthzLimiterDecorator( // disable the Msg types that cannot be included on an authz.MsgExec msgs field
 			sdk.MsgTypeURL(&evmtypes.MsgEthereumTx{}),
@@ -123,7 +141,7 @@ func newCosmosAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		),
 		authante.NewSetUpContextDecorator(),
 		circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
-		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
+		// authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),
 		authante.NewTxTimeoutHeightDecorator(),
 		authante.NewValidateMemoDecorator(options.AccountKeeper),
@@ -134,9 +152,21 @@ func newCosmosAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		authante.NewSetPubKeyDecorator(options.AccountKeeper),
 		authante.NewValidateSigCountDecorator(options.AccountKeeper),
 		authante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
-		authante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
+	}
+	if !options.isEIP712 {
+		decorators = append(decorators, authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker))
+	}
+	var sigVerification sdk.AnteDecorator = authante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler)
+	if options.isEIP712 {
+		sigVerification = evmcosmosante.NewLegacyEip712SigVerificationDecorator(options.AccountKeeper)
+	}
+	decorators = append(decorators, sigVerification)
+
+	decorators = append(decorators,
 		authante.NewIncrementSequenceDecorator(options.AccountKeeper),
 		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 		evmante.NewGasWantedDecorator(options.EvmKeeper, options.FeeMarketKeeper),
-	), nil
+	)
+
+	return sdk.ChainAnteDecorators(decorators...), nil
 }

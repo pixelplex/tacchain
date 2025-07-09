@@ -242,7 +242,7 @@ type TacChainApp struct {
 	configurator module.Configurator
 
 	// liquidstake keeper
-	LiquidstakeKeeper liquidstakekeeper.Keeper
+	LiquidStakeKeeper liquidstakekeeper.Keeper
 
 	// Cosmos EVM keepers
 	FeeMarketKeeper evmfeemarketkeeper.Keeper
@@ -559,7 +559,7 @@ func NewTacChainApp(
 	app.EvidenceKeeper = *evidenceKeeper
 
 	// liquidstake keeper
-	app.LiquidstakeKeeper = liquidstakekeeper.NewKeeper(
+	app.LiquidStakeKeeper = liquidstakekeeper.NewKeeper(
 		encodingConfig.Codec,
 		keys[liquidstaketypes.StoreKey],
 		app.AccountKeeper,
@@ -747,7 +747,7 @@ func NewTacChainApp(
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.AppModule{},
 		// liquidstake module
-		liquidstake.NewAppModule(app.LiquidstakeKeeper),
+		liquidstake.NewAppModule(app.LiquidStakeKeeper),
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
 		// Cosmos EVM modules
@@ -1246,9 +1246,9 @@ func (app *TacChainApp) initErc20TokenPair(ctx sdk.Context) {
 }
 
 func (app *TacChainApp) initLiquidStakeModule(ctx sdk.Context) {
-	params := app.LiquidstakeKeeper.GetParams(ctx)
+	params := app.LiquidStakeKeeper.GetParams(ctx)
 	params.ModulePaused = false
-	app.LiquidstakeKeeper.SetParams(ctx, params)
+	app.LiquidStakeKeeper.SetParams(ctx, params)
 }
 
 // GetMaccPerms returns a copy of the module account permissions
