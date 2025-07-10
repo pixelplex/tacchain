@@ -554,7 +554,7 @@ pex = false
 | gRPC                        | <https://newyork-inap-72-251-230-233.ankr.com/tac_tacd_testnet_full_tendermint_grpc_web_1>    |
 | REST API                    | <https://newyork-inap-72-251-230-233.ankr.com/tac_tacd_testnet_full_tendermint_rest_1>        |
 | EVM JSON RPC                | <https://newyork-inap-72-251-230-233.ankr.com:443/tac_tacd_testnet_full_rpc_1>                |
-| Faucet                      | <https://faucet.tac-turin.ankr.com>                                                           |
+| Faucet                      | <https://turin.faucet.tac.build>                                                           |
 | EVM Explorer                | <https://turin.explorer.tac.build>                                                         |
 | Cosmos Explorer             | <https://turin.bd-explorer.tac.build>                                                |
 | Timeout commit (block time) | 3s                                                                                            |
