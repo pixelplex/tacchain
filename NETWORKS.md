@@ -81,7 +81,7 @@ curl https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/network
 tacchaind start --chain-id tacchain_239-1 --home .mainnet
 ```
 
-#### Upgrade binary to v1.0.1 and restart
+#### 6. Upgrade binary to v1.0.1 and restart
 
 At block height 2176500 your node should halt and throw error `"UPGRADE "v1.0.1" NEEDED at height: 2176500: enable inflation. module=x/upgrade"`. Now you need to stop your node, upgrade binary and restart.
 
