@@ -2,7 +2,7 @@
 
 | Chain ID        | Type      | Status     | Version  | Notes         |
 |-----------------|-----------|------------|----------|---------------|
-| tacchain_239-1 | `mainnet` | **Active** | `v1.0.0`         | Mainnet |
+| tacchain_239-1 | `mainnet` | **Active** | `v1.0.1`         | Mainnet |
 | tacchain_2391-1 | `testnet` | **Active** | `v0.0.12`         | Saint Petersburg Testnet |
 | tacchain_2390-1 | `testnet` | **Active** | `v0.0.7-testnet` | Turin Testnet            |
 
@@ -10,7 +10,7 @@
 
 | Chain ID                    | `tacchain_239-1`                                                                             |
 |-----------------------------|-----------------------------------------------------------------------------------------------|
-| Tacchaind version           | `v1.0.0`                                                                                      |
+| Tacchaind version           | `v1.0.1`                                                                                      |
 | RPC                         | <https://tendermint.rpc.tac.build>                                                                                           |
 | Genesis                     | <https://tendermint-rest.rpc.tac.build/genesis>                                                                                           |
 | gRPC                        | <https://grpc.rpc.tac.build>                                                                                           |
@@ -78,6 +78,16 @@ curl https://raw.githubusercontent.com/TacBuild/tacchain/refs/heads/main/network
 #### 5. Start node
 
 ``` shell
+tacchaind start --chain-id tacchain_239-1 --home .mainnet
+```
+
+#### Upgrade binary to v1.0.1 and restart
+
+At block height TBD your node should halt and throw error `"UPGRADE "v1.0.1" NEEDED at height: TBD: enable inflation. module=x/upgrade"`. Now you need to stop your node, upgrade binary and restart.
+
+``` shell
+git checkout v1.0.1
+make install
 tacchaind start --chain-id tacchain_239-1 --home .mainnet
 ```
 
@@ -196,7 +206,7 @@ echo "{\"pubkey\":$(tacchaind --home .mainnet tendermint show-validator),\"amoun
 2. Broadcast tx
 
 ``` sh
-tacchaind --home .mainnet tx staking create-validator validatortx.json --from validator --keyring-backend test --gas 400000 --gas-prices 100000000000utac -y
+tacchaind --home .mainnet tx staking create-validator validatortx.json --from validator --keyring-backend test --gas 400000 --gas-prices 400000000000utac -y
 ```
 
 #### 4. Delegate more tokens (optional)
@@ -204,7 +214,7 @@ tacchaind --home .mainnet tx staking create-validator validatortx.json --from va
 In this example our moniker is `testnode` as named when we initialized our node. Don't forget to replace with your node moniker.
 
 ``` sh
-tacchaind --home .mainnet tx staking delegate $(tacchaind --home .mainnet q staking validators --output json | jq -r '.validators[] | select(.description.moniker == "testnode") | .operator_address') 1000000000000000000utac --keyring-backend test --from validator --gas 400000 --gas-prices 100000000000utac -y
+tacchaind --home .mainnet tx staking delegate $(tacchaind --home .mainnet q staking validators --output json | jq -r '.validators[] | select(.description.moniker == "testnode") | .operator_address') 1000000000000000000utac --keyring-backend test --from validator --gas 400000 --gas-prices 400000000000utac -y
 ```
 
 ### Tac Mainnet Validator Sentry Node Setup
@@ -484,7 +494,7 @@ echo "{\"pubkey\":$(tacchaind --home .testnet tendermint show-validator),\"amoun
 2. Broadcast tx
 
 ``` sh
-tacchaind --home .testnet tx staking create-validator validatortx.json --from validator --keyring-backend test --gas 400000 --gas-prices 100000000000utac -y
+tacchaind --home .testnet tx staking create-validator validatortx.json --from validator --keyring-backend test --gas 400000 --gas-prices 400000000000utac -y
 ```
 
 #### 4. Delegate more tokens (optional)
@@ -492,7 +502,7 @@ tacchaind --home .testnet tx staking create-validator validatortx.json --from va
 In this example our moniker is `testnode` as named when we initialized our node. Don't forget to replace with your node moniker.
 
 ``` sh
-tacchaind --home .testnet tx staking delegate $(tacchaind --home .testnet q staking validators --output json | jq -r '.validators[] | select(.description.moniker == "testnode") | .operator_address') 1000000000000000000utac --keyring-backend test --from validator --gas 400000 --gas-prices 100000000000utac -y
+tacchaind --home .testnet tx staking delegate $(tacchaind --home .testnet q staking validators --output json | jq -r '.validators[] | select(.description.moniker == "testnode") | .operator_address') 1000000000000000000utac --keyring-backend test --from validator --gas 400000 --gas-prices 400000000000utac -y
 ```
 
 ### Tac Saint Petersburg Testnet Validator Sentry Node Setup
