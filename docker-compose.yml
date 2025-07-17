@@ -18,6 +18,7 @@ services:
       - "45110:45110"  # P2P
       - "45111:45111"  # RPC
       - "45112:45112"  # REST
+      - "45113:45113"  # GRPC
       - "45118:45118"  # RPC_EVM
       - "45119:45119"  # WS_EVM
     volumes:
@@ -36,6 +37,8 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45111
       - JSON_RPC_ADDR=0.0.0.0:45118
       - JSON_RPC_WS_ADDR=0.0.0.0:45119
+      - REST_LADDR=tcp://0.0.0.0:45112
+      - GRPC_LADDR=tcp://0.0.0.0:45113
 
   validator-2:
     network_mode: host
@@ -45,6 +48,7 @@ services:
       - "45120:45120"  # P2P
       - "45121:45121"  # RPC
       - "45122:45122"  # REST
+      - "45123:45123"  # GRPC
       - "45128:45128"  # RPC_EVM
       - "45129:45129"  # WS_EVM
     volumes:
@@ -63,6 +67,8 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45121
       - JSON_RPC_ADDR=0.0.0.0:45128
       - JSON_RPC_WS_ADDR=0.0.0.0:45129
+      - REST_LADDR=tcp://0.0.0.0:45122
+      - GRPC_LADDR=tcp://0.0.0.0:45123
   
   validator-3:
     network_mode: host
@@ -72,6 +78,7 @@ services:
       - "45130:45130"  # P2P
       - "45131:45131"  # RPC
       - "45132:45132"  # REST
+      - "45133:45133"  # GRPC
       - "45138:45138"  # RPC_EVM
       - "45139:45139"  # WS_EVM
     volumes:
@@ -90,6 +97,8 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45131
       - JSON_RPC_ADDR=0.0.0.0:45138
       - JSON_RPC_WS_ADDR=0.0.0.0:45139
+      - REST_LADDR=tcp://0.0.0.0:45132
+      - GRPC_LADDR=tcp://0.0.0.0:45133
 
   validator-4:
     network_mode: host
@@ -99,6 +108,7 @@ services:
       - "45140:45140"  # P2P
       - "45141:45141"  # RPC
       - "45142:45142"  # REST
+      - "45143:45143"  # GRPC
       - "45148:45148"  # RPC_EVM
       - "45149:45149"  # WS_EVM
     volumes:
@@ -117,3 +127,5 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45141
       - JSON_RPC_ADDR=0.0.0.0:45148
       - JSON_RPC_WS_ADDR=0.0.0.0:45149
+      - REST_LADDR=tcp://0.0.0.0:45142
+      - GRPC_LADDR=tcp://0.0.0.0:45143
