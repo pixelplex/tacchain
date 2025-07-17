@@ -37,7 +37,7 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45111
       - JSON_RPC_ADDR=0.0.0.0:45118
       - JSON_RPC_WS_ADDR=0.0.0.0:45119
-      - GRPC_LADDR=tcp://0.0.0.0:45113
+      - GRPC_LADDR=0.0.0.0:45113
 
   validator-2:
     network_mode: host
@@ -66,7 +66,7 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45121
       - JSON_RPC_ADDR=0.0.0.0:45128
       - JSON_RPC_WS_ADDR=0.0.0.0:45129
-      - GRPC_LADDR=tcp://0.0.0.0:45123
+      - GRPC_LADDR=0.0.0.0:45123
   
   validator-3:
     network_mode: host
@@ -95,7 +95,7 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45131
       - JSON_RPC_ADDR=0.0.0.0:45138
       - JSON_RPC_WS_ADDR=0.0.0.0:45139
-      - GRPC_LADDR=tcp://0.0.0.0:45133
+      - GRPC_LADDR=0.0.0.0:45133
 
   validator-4:
     network_mode: host
@@ -124,4 +124,4 @@ services:
       - RPC_LADDR=tcp://0.0.0.0:45141
       - JSON_RPC_ADDR=0.0.0.0:45148
       - JSON_RPC_WS_ADDR=0.0.0.0:45149
-      - GRPC_LADDR=tcp://0.0.0.0:45143
+      - GRPC_LADDR=0.0.0.0:45143
