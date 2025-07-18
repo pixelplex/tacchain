@@ -1006,8 +1006,8 @@ github.com/pingcap/errors v0.11.4 h1:lFuQV/oaUMGcD2tqt+01ROSmJs75VG1ToEOkZIZ4nE4
 github.com/pingcap/errors v0.11.4/go.mod h1:Oi8TUi2kEtXXLMJk9l1cGmz20kV3TaQ0usTwv5KuLY8=
 github.com/pixelplex/cosmos-sdk v0.0.0-20250617165712-c53a1019ecfd h1:wdNwCUHsrId91KHpGSJT4MPxPLYv014IuJimc2BlvQo=
 github.com/pixelplex/cosmos-sdk v0.0.0-20250617165712-c53a1019ecfd/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
-github.com/pixelplex/tac-evm v0.0.0-20250717120932-81edb6f1dac1 h1:HfYWUEJ6SjV4BOvisCFn2AMJoI1+BISrR837QbkUQtY=
-github.com/pixelplex/tac-evm v0.0.0-20250717120932-81edb6f1dac1/go.mod h1:kthk/QmpstaPB5USt4OIIoxqRBDcSqTv37fKWGFNUPM=
+github.com/pixelplex/tac-evm v0.0.0-20250718135525-a52a06f062f7 h1:ddqzU2x2ZpPPvQKhBqPj9TZNtSyp0UsA5Ip2+elxlRM=
+github.com/pixelplex/tac-evm v0.0.0-20250718135525-a52a06f062f7/go.mod h1:kthk/QmpstaPB5USt4OIIoxqRBDcSqTv37fKWGFNUPM=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
