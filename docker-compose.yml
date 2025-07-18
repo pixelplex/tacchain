@@ -17,7 +17,7 @@ services:
     ports:
       - "45110:45110"  # P2P
       - "45111:45111"  # RPC
-      - "45112:1317"  # REST
+      - "45112:45112"  # REST
       - "45113:45113"  # GRPC
       - "45118:45118"  # RPC_EVM
       - "45119:45119"  # WS_EVM
@@ -46,7 +46,7 @@ services:
     ports:
       - "45120:45120"  # P2P
       - "45121:45121"  # RPC
-      - "45122:1317"  # REST
+      - "45122:45122"  # REST
       - "45123:45123"  # GRPC
       - "45128:45128"  # RPC_EVM
       - "45129:45129"  # WS_EVM
@@ -67,7 +67,7 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45128
       - JSON_RPC_WS_ADDR=0.0.0.0:45129
       - GRPC_LADDR=0.0.0.0:45123
-  
+
   validator-3:
     network_mode: host
     restart: unless-stopped
@@ -75,7 +75,7 @@ services:
     ports:
       - "45130:45130"  # P2P
       - "45131:45131"  # RPC
-      - "45132:1317"  # REST
+      - "45132:45132"  # REST
       - "45133:45133"  # GRPC
       - "45138:45138"  # RPC_EVM
       - "45139:45139"  # WS_EVM
@@ -104,7 +104,7 @@ services:
     ports:
       - "45140:45140"  # P2P
       - "45141:45141"  # RPC
-      - "45142:1317"  # REST
+      - "45142:45142"  # REST
       - "45143:45143"  # GRPC
       - "45148:45148"  # RPC_EVM
       - "45149:45149"  # WS_EVM
