@@ -16,6 +16,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
+
+# Download go modules 
+COPY go.mod go.sum /code/
+RUN go mod download
+
 COPY . /code/
 
 # force it to use static lib (from above) not standard libgo_cosmwasm.so file
