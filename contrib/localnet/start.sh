@@ -16,4 +16,5 @@ $TACCHAIND start --chain-id $CHAIN_ID \
   --json-rpc.enable \
   --grpc.address $GRPC_LADDR \
   --grpc.enable=true \
-  --api.enable=true
+  --api.enable=true \
+  --api.enabled-unsafe-cors
