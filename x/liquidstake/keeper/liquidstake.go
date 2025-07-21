@@ -1021,7 +1021,12 @@ func (k Keeper) CheckDelegationStates(ctx sdk.Context, proxyAcc sdk.AccAddress) 
 		cachedCtx, proxyAcc,
 		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
 			valAddr := del.GetValidatorAddr()
-			val, err := k.stakingKeeper.Validator(cachedCtx, sdk.ValAddress(valAddr))
+			valAddrObj, parseErr := sdk.ValAddressFromBech32(valAddr)
+			if parseErr != nil {
+				return false
+			}
+
+			val, err := k.stakingKeeper.Validator(cachedCtx, valAddrObj)
 			if err != nil {
 				return false
 			}

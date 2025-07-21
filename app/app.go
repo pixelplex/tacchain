@@ -831,6 +831,7 @@ func NewTacChainApp(
 		group.ModuleName,
 		// no-op modules
 		stakingtypes.ModuleName,
+		liquidstaketypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,

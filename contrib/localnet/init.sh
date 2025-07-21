@@ -226,6 +226,53 @@ jq '
   ]
 ' $HOMEDIR/config/genesis.json > $HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
 
+jq '
+.app_state.erc20 = {
+    "params": {
+        "enable_erc20": true,
+        "native_precompiles": [
+          "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517"
+        ],
+        "dynamic_precompiles": []
+      },
+      "token_pairs": [
+        {
+            "erc20_address": "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517",
+            "denom": "ugtac",
+            "enabled": true,
+            "contract_owner": "OWNER_MODULE"
+        }
+      ]
+}
+' $HOMEDIR/config/genesis.json >$HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
+
+jq '
+.app_state.liquidstake = {
+      "params": {
+        "liquid_bond_denom": "ugtac",
+        "whitelisted_validators": [
+          {
+            "validator_address": "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt",
+            "target_weight": "10000"
+          }
+        ],
+        "unstake_fee_rate": "0.000000000000000000",
+        "lsm_disabled": false,
+        "min_liquid_stake_amount": "1000",
+        "cw_locked_pool_address": "",
+        "fee_account_address": "tac1w2q3mashs2k4wcpqzs5q5xewnhnnr7wslr34safzvwqzvuqh3gjqn6xzrj",
+        "autocompound_fee_rate": "0.050000000000000000",
+        "whitelist_admin_address": "tac1w2q3mashs2k4wcpqzs5q5xewnhnnr7wslr34safzvwqzvuqh3gjqn6xzrj",
+        "module_paused": false
+      },
+      "liquid_validators": [
+        {
+          "operator_address": "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt"
+        }
+      ]
+}
+' $HOMEDIR/config/genesis.json >$HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
+
 # set max validators
 sed -i.bak "s/\"max_validators\": 100/\"max_validators\": $MAX_VALIDATORS/g" $HOMEDIR/config/genesis.json
 
