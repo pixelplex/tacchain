@@ -33,7 +33,7 @@ func (k Keeper) GetNetAmountState(ctx sdk.Context) (nas *types.NetAmountState, e
 
 	totalUnbondingBalance := math.ZeroInt()
 	ubds, err := k.stakingKeeper.GetAllUnbondingDelegations(ctx, types.LiquidStakeProxyAcc)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	for _, ubd := range ubds {

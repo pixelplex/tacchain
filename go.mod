@@ -277,7 +277,8 @@ replace (
 
 	// // use Cosmos-SDK fork to enable Ledger functionality
 	// github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.50.13-0.20250319183239-53dea340efc7
-	github.com/cosmos/cosmos-sdk => github.com/pixelplex/cosmos-sdk v0.0.0-20250617165712-c53a1019ecfd
+	// github.com/cosmos/cosmos-sdk => github.com/pixelplex/cosmos-sdk v0.0.0-20250617165712-c53a1019ecfd
+	github.com/cosmos/cosmos-sdk => ../../cosmos-sdk/
 
 	// replace cosmos evm with our fork that uses geth v1.13.15
 	// github.com/cosmos/evm => github.com/TacBuild/evm v0.0.0-20250604085412-f683909f629c
