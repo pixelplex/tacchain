@@ -1004,6 +1004,8 @@ github.com/pierrec/lz4 v1.0.2-0.20190131084431-473cd7ce01a1/go.mod h1:3/3N9NVKO0
 github.com/pierrec/lz4 v2.0.5+incompatible/go.mod h1:pdkljMzZIN41W+lC3N2tnIh5sFi+IEE17M5jbnwPHcY=
 github.com/pingcap/errors v0.11.4 h1:lFuQV/oaUMGcD2tqt+01ROSmJs75VG1ToEOkZIZ4nE4=
 github.com/pingcap/errors v0.11.4/go.mod h1:Oi8TUi2kEtXXLMJk9l1cGmz20kV3TaQ0usTwv5KuLY8=
+github.com/pixelplex/cosmos-sdk v0.50.12-lsm-beta.0 h1:+Cu+JF0lv1rFm6zuA67I4ZUwgP/e1inhGOo4ut3AP48=
+github.com/pixelplex/cosmos-sdk v0.50.12-lsm-beta.0/go.mod h1:0Fo5FGFsiXxRRrVm7hBwxzwCeHhNxFPIMUSXqe9P8aA=
 github.com/pixelplex/tac-evm v0.0.0-20250718135525-a52a06f062f7 h1:ddqzU2x2ZpPPvQKhBqPj9TZNtSyp0UsA5Ip2+elxlRM=
 github.com/pixelplex/tac-evm v0.0.0-20250718135525-a52a06f062f7/go.mod h1:kthk/QmpstaPB5USt4OIIoxqRBDcSqTv37fKWGFNUPM=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=

@@ -12,6 +12,9 @@ import (
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 
+	"github.com/Asphere-xyz/tacchain/x/epochs"
+	epochskeeper "github.com/Asphere-xyz/tacchain/x/epochs/keeper"
+	epochstypes "github.com/Asphere-xyz/tacchain/x/epochs/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -241,6 +244,7 @@ type TacChainApp struct {
 	// module configurator
 	configurator module.Configurator
 
+	EpochsKeeper *epochskeeper.Keeper
 	// liquidstake keeper
 	LiquidStakeKeeper liquidstakekeeper.Keeper
 
@@ -310,7 +314,7 @@ func NewTacChainApp(
 		authzkeeper.StoreKey, nftkeeper.StoreKey, group.StoreKey,
 		// non sdk store keys
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
-		icahosttypes.StoreKey, icacontrollertypes.StoreKey,
+		icahosttypes.StoreKey, epochstypes.StoreKey, icacontrollertypes.StoreKey,
 		// liquidstake module
 		liquidstaketypes.StoreKey,
 		// Cosmos EVM store keys
@@ -558,6 +562,8 @@ func NewTacChainApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	app.EpochsKeeper = epochskeeper.NewKeeper(keys[epochstypes.StoreKey])
+
 	// liquidstake keeper
 	app.LiquidStakeKeeper = liquidstakekeeper.NewKeeper(
 		encodingConfig.Codec,
@@ -570,6 +576,12 @@ func NewTacChainApp(
 		app.SlashingKeeper,
 		app.MsgServiceRouter(),
 		authAddr,
+	)
+
+	app.EpochsKeeper.SetHooks(
+		epochstypes.NewMultiEpochHooks(
+			app.LiquidStakeKeeper.EpochHooks(),
+		),
 	)
 
 	// Cosmos EVM keepers
@@ -734,6 +746,7 @@ func NewTacChainApp(
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		epochs.NewAppModule(*app.EpochsKeeper),
 		authzmodule.NewAppModule(encodingConfig.Codec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		groupmodule.NewAppModule(encodingConfig.Codec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		nftmodule.NewAppModule(encodingConfig.Codec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
@@ -789,6 +802,7 @@ func NewTacChainApp(
 		capabilitytypes.ModuleName,
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
+		epochstypes.ModuleName,
 		// liquidstake module after staking
 		liquidstaketypes.ModuleName,
 		slashingtypes.ModuleName,
@@ -830,6 +844,7 @@ func NewTacChainApp(
 		feegrant.ModuleName,
 		group.ModuleName,
 		// no-op modules
+		epochstypes.ModuleName,
 		stakingtypes.ModuleName,
 		liquidstaketypes.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -872,6 +887,7 @@ func NewTacChainApp(
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		epochstypes.ModuleName,
 		// liquidstake module
 		liquidstaketypes.ModuleName,
 
