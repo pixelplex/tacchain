@@ -38,6 +38,7 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45118
       - JSON_RPC_WS_ADDR=0.0.0.0:45119
       - GRPC_LADDR=0.0.0.0:45113
+      - UNBONDING_TIME=300s
 
   validator-2:
     network_mode: host
@@ -67,6 +68,7 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45128
       - JSON_RPC_WS_ADDR=0.0.0.0:45129
       - GRPC_LADDR=0.0.0.0:45123
+      - UNBONDING_TIME=300s
 
   validator-3:
     network_mode: host
@@ -96,6 +98,7 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45138
       - JSON_RPC_WS_ADDR=0.0.0.0:45139
       - GRPC_LADDR=0.0.0.0:45133
+      - UNBONDING_TIME=300s
 
   validator-4:
     network_mode: host
@@ -125,3 +128,4 @@ services:
       - JSON_RPC_ADDR=0.0.0.0:45148
       - JSON_RPC_WS_ADDR=0.0.0.0:45149
       - GRPC_LADDR=0.0.0.0:45143
+      - UNBONDING_TIME=300s
