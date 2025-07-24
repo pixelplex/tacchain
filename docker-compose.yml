@@ -9,6 +9,7 @@ services:
       - CHAIN_ID=tacchain_2391-1
       - MONIKER=tac-validator
       - HOMEDIR=/tacchain_data
+      - UNBONDING_TIME=300s
 
   validator-1:
     network_mode: host
