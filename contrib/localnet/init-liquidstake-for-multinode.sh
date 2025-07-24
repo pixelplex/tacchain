@@ -24,6 +24,7 @@ GOAL_BONDED=${GOAL_BONDED:-0.6}
 SLASH_DOWNTIME_PENALTY=${SLASH_DOWNTIME_PENALTY:-0.001}
 SLASH_SIGNED_BLOCKS_WINDOW=${SLASH_SIGNED_BLOCKS_WINDOW:-21600}
 MAX_VALIDATORS=${MAX_VALIDATORS:-14}
+UNBONDING_TIME=${UNBONDING_TIME:-1814400s}
 
 # ports
 RPC_PORT=${RPC_PORT:-26657}
@@ -295,6 +296,8 @@ jq '
 
 # set max validators
 sed -i.bak "s/\"max_validators\": 100/\"max_validators\": $MAX_VALIDATORS/g" $HOMEDIR/config/genesis.json
+
+sed -i.bak "s/\"unbonding_time\": \"1814400s\"/\"unbonding_time\": \"$UNBONDING_TIME\"/g" $HOMEDIR/config/genesis.json
 
 # set ports
 sed -i.bak "s/26657/$RPC_PORT/g" $HOMEDIR/config/config.toml

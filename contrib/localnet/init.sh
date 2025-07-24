@@ -273,7 +273,6 @@ jq '
 }
 ' $HOMEDIR/config/genesis.json >$HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
 
-# jq '.app_state.staking.params.unbonding_time = $$UNBONDING_TIME' $HOMEDIR/config/genesis.json >$HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
 sed -i.bak "s/\"unbonding_time\": \"1814400s\"/\"unbonding_time\": \"$UNBONDING_TIME\"/g" $HOMEDIR/config/genesis.json
 
 # set max validators
