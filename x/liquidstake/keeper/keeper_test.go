@@ -118,11 +118,11 @@ func (s *KeeperTestSuite) liquidStaking(liquidStaker sdk.AccAddress, stakingAmt 
 	ctx, writeCache := s.ctx.CacheContext()
 	params := s.keeper.GetParams(ctx)
 
-	stkxprtBalanceBefore := s.app.BankKeeper.GetBalance(
+	gtacBalanceBefore := s.app.BankKeeper.GetBalance(
 		ctx, liquidStaker, params.LiquidBondDenom,
 	).Amount
 
-	stkXPRTMintAmt, err := s.keeper.LiquidStake(
+	gTACMintAmt, err := s.keeper.LiquidStake(
 		ctx,
 		types.LiquidStakeProxyAcc,
 		liquidStaker,
@@ -132,13 +132,13 @@ func (s *KeeperTestSuite) liquidStaking(liquidStaker sdk.AccAddress, stakingAmt 
 		return err
 	}
 
-	stkxprtBalanceAfter := s.app.BankKeeper.GetBalance(
+	gtacBalanceAfter := s.app.BankKeeper.GetBalance(
 		ctx, liquidStaker, params.LiquidBondDenom,
 	).Amount
 
 	s.Require().NoError(err)
 	s.Require().EqualValues(
-		stkXPRTMintAmt, stkxprtBalanceAfter.Sub(stkxprtBalanceBefore),
+		gTACMintAmt, gtacBalanceAfter.Sub(gtacBalanceBefore),
 	)
 	writeCache()
 
@@ -147,7 +147,7 @@ func (s *KeeperTestSuite) liquidStaking(liquidStaker sdk.AccAddress, stakingAmt 
 
 func (s *KeeperTestSuite) liquidUnstaking(
 	liquidStaker sdk.AccAddress,
-	ubdStkXPRTAmt math.Int,
+	ubdGTACAmt math.Int,
 	ubdComplete bool,
 ) error {
 	ctx := s.ctx
@@ -161,7 +161,7 @@ func (s *KeeperTestSuite) liquidUnstaking(
 
 	ubdTime, unbondingAmt, _, unbondedAmt, err := s.liquidUnstakingWithResult(
 		liquidStaker,
-		sdk.NewCoin(params.LiquidBondDenom, ubdStkXPRTAmt),
+		sdk.NewCoin(params.LiquidBondDenom, ubdGTACAmt),
 	)
 	if err != nil {
 		return err
@@ -199,7 +199,7 @@ func (s *KeeperTestSuite) liquidUnstaking(
 }
 
 func (s *KeeperTestSuite) liquidUnstakingWithResult(
-	liquidStaker sdk.AccAddress, unstakingStkXPRT sdk.Coin,
+	liquidStaker sdk.AccAddress, unstakingGTAC sdk.Coin,
 ) (time.Time, math.Int, []stakingtypes.UnbondingDelegation, math.Int, error) {
 	ctx, writeCache := s.ctx.CacheContext()
 	params := s.keeper.GetParams(ctx)
@@ -208,12 +208,12 @@ func (s *KeeperTestSuite) liquidUnstakingWithResult(
 	balanceBefore := s.app.BankKeeper.GetBalance(
 		ctx, liquidStaker, sdk.DefaultBondDenom,
 	).Amount
-	stkxprtBalanceBefore := s.app.BankKeeper.GetBalance(
+	gtacBalanceBefore := s.app.BankKeeper.GetBalance(
 		ctx, liquidStaker, params.LiquidBondDenom,
 	).Amount
 
 	ubdTime, unbondingAmt, ubds, unbondedAmt, err := s.keeper.LiquidUnstake(
-		ctx, types.LiquidStakeProxyAcc, liquidStaker, unstakingStkXPRT,
+		ctx, types.LiquidStakeProxyAcc, liquidStaker, unstakingGTAC,
 	)
 	if err != nil {
 		return ubdTime, unbondingAmt, ubds, unbondedAmt, err
@@ -222,11 +222,11 @@ func (s *KeeperTestSuite) liquidUnstakingWithResult(
 	balanceAfter := s.app.BankKeeper.GetBalance(
 		ctx, liquidStaker, sdk.DefaultBondDenom,
 	).Amount
-	stkxprtBalanceAfter := s.app.BankKeeper.GetBalance(
+	gtacBalanceAfter := s.app.BankKeeper.GetBalance(
 		ctx, liquidStaker, params.LiquidBondDenom,
 	).Amount
 	s.Require().EqualValues(
-		unstakingStkXPRT.Amount, stkxprtBalanceBefore.Sub(stkxprtBalanceAfter),
+		unstakingGTAC.Amount, gtacBalanceBefore.Sub(gtacBalanceAfter),
 	)
 
 	if unbondedAmt.IsPositive() {
@@ -250,7 +250,7 @@ func (s *KeeperTestSuite) RequireNetAmountStateZero() {
 	nas, err := s.keeper.GetNetAmountState(s.ctx)
 	s.Require().NoError(err)
 	s.Require().EqualValues(nas.MintRate, sdk.ZeroDec())
-	s.Require().EqualValues(nas.StkxprtTotalSupply, sdk.ZeroInt())
+	s.Require().EqualValues(nas.GtacTotalSupply, sdk.ZeroInt())
 	s.Require().EqualValues(nas.NetAmount, sdk.ZeroDec())
 	s.Require().EqualValues(nas.TotalDelShares, sdk.ZeroDec())
 	s.Require().EqualValues(nas.TotalLiquidTokens, sdk.ZeroInt())

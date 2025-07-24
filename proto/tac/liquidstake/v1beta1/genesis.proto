@@ -1,10 +1,10 @@
 syntax = "proto3";
-package pstake.liquidstake.v1beta1;
+package tac.liquidstake.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "pstake/liquidstake/v1beta1/liquidstake.proto";
+import "tac/liquidstake/v1beta1/liquidstake.proto";
 
-option go_package = "github.com/persistenceOne/pstake-native/v2/x/liquidstake/types";
+option go_package = "github.com/Asphere-xyz/tacchain/x/liquidstake/types";
 option (gogoproto.equal_all) = true;
 
 // GenesisState defines the liquidstake module's genesis state.

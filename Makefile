@@ -88,6 +88,8 @@ go.sum: go.mod
 clean:
 	rm -rf build/
 
+.PHONY: all install build build-windows-client go.sum clean
+
 ###############################################################################
 ###                                 Tests                                   ###
 ###############################################################################
@@ -121,6 +123,8 @@ test-ledger:
 test-solidity:
 	./tests/solidity/run-solidity-tests.sh
 
+.PHONY: test test-unit test-race test-e2e test-cover test-benchmark test-localnet-params test-localnet-evm test-ledger test-solidity
+
 ###############################################################################
 ###                                Networks                                 ###
 ###############################################################################
@@ -139,6 +143,12 @@ localnet-init-multi-node:
 localnet-start:
 	./contrib/localnet/start.sh
 
+.PHONY: localnet-start localnet-init localnet-init-multi-node
+
+###############################################################################
+###                                Protobuf                                 ###
+###############################################################################
+
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
 
@@ -146,8 +156,21 @@ protoVer=0.14.0
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
 protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
+proto-all: proto-format proto-gen
+
 proto-gen:
 	@echo "Generating Protobuf files"
 	@$(protoImage) sh ./scripts/protocgen.sh
 	@go mod tidy 
 
+proto-format:
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
+
+proto-check-breaking:
+	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
+
+proto-update-deps:
+	@echo "Updating Protobuf dependencies"
+	$(DOCKER) run --rm -v $(CURDIR)/proto:/workspace --workdir /workspace $(protoImageName) buf mod update
+
+.PHONY: proto-all proto-gen proto-format proto-check-breaking proto-update-deps

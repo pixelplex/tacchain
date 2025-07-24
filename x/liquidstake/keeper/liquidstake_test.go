@@ -262,7 +262,7 @@ func (s *KeeperTestSuite) TestLiquidStake() {
 	// no btoken supply and netAmount after unbond all
 	nas, err := s.keeper.GetNetAmountState(s.ctx)
 	s.Require().NoError(err)
-	s.Require().EqualValues(nas.StkxprtTotalSupply, sdk.ZeroInt())
+	s.Require().EqualValues(nas.GtacTotalSupply, sdk.ZeroInt())
 	s.Require().Equal(nas.TotalRemainingRewards, sdk.ZeroDec())
 	s.Require().Equal(nas.TotalDelShares, sdk.ZeroDec())
 	s.Require().Equal(nas.TotalLiquidTokens, sdk.ZeroInt())

@@ -10,7 +10,7 @@ buf generate --template buf.gen.gogo.yaml $file
 cd ..
 
 # move proto files to the right places
-cp -r github.com/persistenceOne/pstake-native/v*/* ./
+cp -r github.com/Asphere-xyz/tacchain/* ./
 rm -rf github.com
 
 #go mod tidy

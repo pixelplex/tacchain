@@ -237,7 +237,7 @@ jq '
       "token_pairs": [
         {
             "erc20_address": "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517",
-            "denom": "ugtac",
+            "denom": "stk/utac",
             "enabled": true,
             "contract_owner": "OWNER_MODULE"
         }
@@ -248,7 +248,7 @@ jq '
 jq '
 .app_state.liquidstake = {
       "params": {
-        "liquid_bond_denom": "ugtac",
+        "liquid_bond_denom": "stk/utac",
         "whitelisted_validators": [
           {
             "validator_address": "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt",

@@ -16,7 +16,6 @@ import (
 	epochskeeper "github.com/Asphere-xyz/tacchain/x/epochs/keeper"
 	epochstypes "github.com/Asphere-xyz/tacchain/x/epochs/types"
 	abci "github.com/cometbft/cometbft/abci/types"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/cosmos/ibc-go/modules/capability"
@@ -1002,10 +1001,6 @@ func NewTacChainApp(
 		}
 	}
 
-	app.initErc20TokenPair(app.NewUncachedContext(false, cmtproto.Header{}))
-
-	app.initLiquidStakeModule(app.NewUncachedContext(false, cmtproto.Header{}))
-
 	return app
 }
 
@@ -1155,8 +1150,6 @@ func (app *TacChainApp) DefaultGenesis() map[string]json.RawMessage {
 
 	// ERC20 genesis configuration
 	erc20GenState := evmerc20types.DefaultGenesisState()
-	erc20GenState.TokenPairs = TacTokenPairs
-	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTACContract)
 	erc20GenState.Params.EnableErc20 = true
 	genesis[evmerc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
@@ -1254,18 +1247,6 @@ func (app *TacChainApp) RegisterTendermintService(clientCtx client.Context) {
 
 func (app *TacChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
-}
-
-func (app *TacChainApp) initErc20TokenPair(ctx sdk.Context) {
-	for _, pair := range TacTokenPairs {
-		app.Erc20Keeper.SetToken(ctx, pair)
-	}
-}
-
-func (app *TacChainApp) initLiquidStakeModule(ctx sdk.Context) {
-	params := app.LiquidStakeKeeper.GetParams(ctx)
-	params.ModulePaused = false
-	app.LiquidStakeKeeper.SetParams(ctx, params)
 }
 
 // GetMaccPerms returns a copy of the module account permissions
