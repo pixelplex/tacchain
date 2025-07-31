@@ -15,7 +15,7 @@ import (
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 
-	liquidstakekeeper "github.com/Asphere-xyz/tacchain/x/liquidstake/keeper"
+	liquidstakekeeper "github.com/cosmos/evm/x/liquidstake/keeper"
 )
 
 type AppKeepers struct {

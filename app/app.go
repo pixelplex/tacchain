@@ -12,9 +12,9 @@ import (
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 
-	"github.com/Asphere-xyz/tacchain/x/epochs"
-	epochskeeper "github.com/Asphere-xyz/tacchain/x/epochs/keeper"
-	epochstypes "github.com/Asphere-xyz/tacchain/x/epochs/types"
+	"github.com/cosmos/evm/x/epochs"
+	epochskeeper "github.com/cosmos/evm/x/epochs/keeper"
+	epochstypes "github.com/cosmos/evm/x/epochs/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/gogoproto/proto"
@@ -157,9 +157,9 @@ import (
 	evmvmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	evmvmtypes "github.com/cosmos/evm/x/vm/types"
 
-	"github.com/Asphere-xyz/tacchain/x/liquidstake"
-	liquidstakekeeper "github.com/Asphere-xyz/tacchain/x/liquidstake/keeper"
-	liquidstaketypes "github.com/Asphere-xyz/tacchain/x/liquidstake/types"
+	"github.com/cosmos/evm/x/liquidstake"
+	liquidstakekeeper "github.com/cosmos/evm/x/liquidstake/keeper"
+	liquidstaketypes "github.com/cosmos/evm/x/liquidstake/types"
 )
 
 // module account permissions
@@ -715,6 +715,7 @@ func NewTacChainApp(
 			app.GovKeeper,
 			app.SlashingKeeper,
 			app.EvidenceKeeper,
+			app.LiquidStakeKeeper,
 		),
 	)
 
