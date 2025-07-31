@@ -4,7 +4,7 @@ trufflehog_ignore: true
 deploy:
   environment:
     tacchain:
-      branch: localnet
+      branch: integrate_evm_liquidstake
       docker_compose: true
       runner_tags: 
         - tac-localchain-2
