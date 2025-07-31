@@ -17,27 +17,27 @@ require (
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/nft v0.1.1
 	cosmossdk.io/x/upgrade v0.1.4
-	github.com/CosmWasm/wasmd v0.53.0
+	github.com/CosmWasm/wasmd v0.53.0 // indirect
 	github.com/cometbft/cometbft v0.38.17
 	github.com/cosmos/cosmos-db v1.1.1
-	github.com/cosmos/cosmos-proto v1.0.0-beta.5
+	github.com/cosmos/cosmos-proto v1.0.0-beta.5 // indirect
 	github.com/cosmos/cosmos-sdk v0.50.13
 	github.com/cosmos/evm v0.1.1-0.20250328143818-59c573a37f8b
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
 	github.com/ethereum/go-ethereum v1.15.5
-	github.com/golang/protobuf v1.5.4
-	github.com/gorilla/mux v1.8.1
-	github.com/grpc-ecosystem/grpc-gateway v1.16.0
+	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/gorilla/mux v1.8.1 // indirect
+	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
 	github.com/spf13/cast v1.7.1
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20241202173237-19429a94021a
-	google.golang.org/grpc v1.70.0
-	google.golang.org/protobuf v1.36.5
+	google.golang.org/genproto/googleapis/api v0.0.0-20241202173237-19429a94021a // indirect
+	google.golang.org/grpc v1.70.0 // indirect
+	google.golang.org/protobuf v1.36.5 // indirect
 )
 
 require github.com/cosmos/ibc-go/v8 v8.7.0
@@ -282,7 +282,7 @@ replace (
 	// replace cosmos evm with our fork that uses geth v1.13.15
 	// github.com/cosmos/evm => github.com/TacBuild/evm v0.0.0-20250604085412-f683909f629c
 	// github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20250718135525-a52a06f062f7
-	github.com/cosmos/evm => ../evm
+	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20250731111351-ffc1f0ce1828
 	// Cosmos geth fork
 	// replace with our fork using geth v1.13.15
 	github.com/ethereum/go-ethereum => github.com/TacBuild/go-ethereum v0.0.0-20250428082551-b4f5a8f8420a
