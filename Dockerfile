@@ -25,7 +25,6 @@ COPY . /code/
 
 # force it to use static lib (from above) not standard libgo_cosmwasm.so file
 RUN make build
-RUN LEDGER_ENABLED=false make build
 
 FROM ubuntu:22.04
 
@@ -43,7 +42,8 @@ RUN apt-get update && apt-get install -y \
     bc \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v2.1.0/libwasmvm.x86_64.so
+RUN wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v2.2.1/libwasmvm.x86_64.so
+RUN wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v2.1.0/libwasmvm.aarch64.so
 
 WORKDIR /scripts
 
@@ -57,3 +57,4 @@ EXPOSE 26657
 EXPOSE 9090
 
 CMD ["/usr/bin/tacchaind", "version"]
+
