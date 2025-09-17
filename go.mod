@@ -239,7 +239,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
+	golang.org/x/crypto v0.32.0
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
@@ -280,7 +280,7 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/pixelplex/cosmos-sdk v0.50.12-lsm-beta.0
 
 	// replace cosmos evm with our fork that uses geth v1.13.15
-	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20250825121004-d13becaea1f2
+	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20250827171739-f11252f3e578
 	// Cosmos geth fork
 	// replace with our fork using geth v1.13.15
 	github.com/ethereum/go-ethereum => github.com/TacBuild/go-ethereum v0.0.0-20250428082551-b4f5a8f8420a
