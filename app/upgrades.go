@@ -6,10 +6,10 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/Asphere-xyz/tacchain/app/upgrades"
+	liquidstake_upgrade "github.com/Asphere-xyz/tacchain/app/upgrades/liquidstake"
 	v0010 "github.com/Asphere-xyz/tacchain/app/upgrades/v0.0.10"
 	v0011 "github.com/Asphere-xyz/tacchain/app/upgrades/v0.0.11"
 	v009 "github.com/Asphere-xyz/tacchain/app/upgrades/v0.0.9"
-	liquidstake_upgrade "github.com/Asphere-xyz/tacchain/app/upgrades/liquidstake"
 )
 
 // Upgrades list of chain upgrades
@@ -30,7 +30,9 @@ func (app *TacChainApp) RegisterUpgradeHandlers() {
 		IBCKeeper:             app.IBCKeeper,
 		Codec:                 app.appCodec,
 		GetStoreKey:           app.GetKey,
-		LiquidsStakeKeeper:    &app.LiquidStakeKeeper,
+		LiquidStakeKeeper:     &app.LiquidStakeKeeper,
+		BankKeeper:            app.BankKeeper,
+		Erc20Keeper:           &app.Erc20Keeper,
 	}
 	app.GetStoreKeys()
 	// register all upgrade handlers

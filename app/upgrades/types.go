@@ -15,6 +15,8 @@ import (
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	evmerc20keeper "github.com/cosmos/evm/x/erc20/keeper"
 	liquidstakekeeper "github.com/cosmos/evm/x/liquidstake/keeper"
 )
 
@@ -26,7 +28,9 @@ type AppKeepers struct {
 	GetStoreKey           func(storeKey string) *storetypes.KVStoreKey
 	CapabilityKeeper      *capabilitykeeper.Keeper
 	IBCKeeper             *ibckeeper.Keeper
-	LiquidsStakeKeeper    *liquidstakekeeper.Keeper
+	LiquidStakeKeeper     *liquidstakekeeper.Keeper
+	BankKeeper            bankkeeper.Keeper
+	Erc20Keeper           *evmerc20keeper.Keeper
 }
 
 type ModuleManager interface {

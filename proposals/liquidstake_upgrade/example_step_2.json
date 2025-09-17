@@ -1,0 +1,98 @@
+{
+  "messages": [
+    {
+      "@type": "/tac.liquidstake.v1beta1.MsgUpdateParams",
+      "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
+      "params": {
+        "liquid_bond_denom": "stk/utac",
+        "unstake_fee_rate": "0.000000000000000000",
+        "lsm_disabled": true,
+        "min_liquid_stake_amount": "1000",
+        "cw_locked_pool_address": "",
+        "fee_account_address": "tac1w2q3mashs2k4wcpqzs5q5xewnhnnr7wslr34safzvwqzvuqh3gjqn6xzrj",
+        "autocompound_fee_rate": "0.050000000000000000",
+        "whitelist_admin_address": "tac1w2q3mashs2k4wcpqzs5q5xewnhnnr7wslr34safzvwqzvuqh3gjqn6xzrj"
+      }
+    },
+    {
+      "@type": "/tac.liquidstake.v1beta1.MsgUpdateWhitelistedValidators",
+      "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
+      "whitelisted_validators": [
+        {
+          "validator_address": "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt",
+          "target_weight": "10000"
+        }
+      ]
+    },
+    {
+      "@type": "/tac.liquidstake.v1beta1.MsgSetModulePaused",
+      "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
+      "is_paused": false
+    },
+    {
+      "@type": "/cosmos.evm.vm.v1.MsgUpdateParams",
+      "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
+      "params": {
+        "evm_denom": "utac",
+        "extra_eips": [
+          "3855"
+        ],
+        "chain_config": {
+          "homestead_block": "0",
+          "dao_fork_block": "0",
+          "dao_fork_support": true,
+          "eip150_block": "0",
+          "eip155_block": "0",
+          "eip158_block": "0",
+          "byzantium_block": "0",
+          "constantinople_block": "0",
+          "petersburg_block": "0",
+          "istanbul_block": "0",
+          "muir_glacier_block": "0",
+          "berlin_block": "0",
+          "london_block": "0",
+          "arrow_glacier_block": "0",
+          "gray_glacier_block": "0",
+          "merge_netsplit_block": "0",
+          "chain_id": "2391",
+          "denom": "utac",
+          "decimals": "18",
+          "shanghai_time": "0",
+          "cancun_time": "0",
+          "prague_time": null,
+          "verkle_time": null
+        },
+        "allow_unprotected_txs": true,
+        "evm_channels": [],
+        "access_control": {
+          "create": {
+            "access_type": "ACCESS_TYPE_PERMISSIONLESS",
+            "access_control_list": []
+          },
+          "call": {
+            "access_type": "ACCESS_TYPE_PERMISSIONLESS",
+            "access_control_list": []
+          }
+        },
+        "active_static_precompiles": [
+          "0x0000000000000000000000000000000000000100",
+          "0x0000000000000000000000000000000000000400",
+          "0x0000000000000000000000000000000000000800",
+          "0x0000000000000000000000000000000000000801",
+          "0x0000000000000000000000000000000000000802",
+          "0x0000000000000000000000000000000000000803",
+          "0x0000000000000000000000000000000000000804",
+          "0x0000000000000000000000000000000000000805",
+          "0x0000000000000000000000000000000000000806",
+          "0x0000000000000000000000000000000000000807",
+          "0x0000000000000000000000000000000000001600"
+        ]
+      }
+    }
+  ],
+  "metadata": "<url/to/metadata>",
+  "deposit": "1000000000000000000utac",
+  "title": "Update Liquidstake params",
+  "summary": "Liquidstake params",
+  "expedited": false
+}
