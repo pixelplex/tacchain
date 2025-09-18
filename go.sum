@@ -1006,8 +1006,8 @@ github.com/pingcap/errors v0.11.4 h1:lFuQV/oaUMGcD2tqt+01ROSmJs75VG1ToEOkZIZ4nE4
 github.com/pingcap/errors v0.11.4/go.mod h1:Oi8TUi2kEtXXLMJk9l1cGmz20kV3TaQ0usTwv5KuLY8=
 github.com/pixelplex/cosmos-sdk v0.50.12-lsm-beta.0 h1:+Cu+JF0lv1rFm6zuA67I4ZUwgP/e1inhGOo4ut3AP48=
 github.com/pixelplex/cosmos-sdk v0.50.12-lsm-beta.0/go.mod h1:0Fo5FGFsiXxRRrVm7hBwxzwCeHhNxFPIMUSXqe9P8aA=
-github.com/pixelplex/tac-evm v0.0.0-20250825121004-d13becaea1f2 h1:hfbYCYu3WFrabZIY0/rsZmq5syG8KvBfnvwyLUseEWg=
-github.com/pixelplex/tac-evm v0.0.0-20250825121004-d13becaea1f2/go.mod h1:77axzyUhE01IZ8tdWqxnM4AAEEWYNLL0XIck+GxFjo0=
+github.com/pixelplex/tac-evm v0.0.0-20250827171739-f11252f3e578 h1:Jg95biaH+kqjjZynOKyKbQkV3N6jmhoP42FD3/MRU3g=
+github.com/pixelplex/tac-evm v0.0.0-20250827171739-f11252f3e578/go.mod h1:77axzyUhE01IZ8tdWqxnM4AAEEWYNLL0XIck+GxFjo0=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
