@@ -273,8 +273,6 @@ jq '
 }
 ' $HOMEDIR/config/genesis.json >$HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
 
-sed -i.bak "s/\"unbonding_time\": \"1814400s\"/\"unbonding_time\": \"$UNBONDING_TIME\"/g" $HOMEDIR/config/genesis.json
-
 # set max validators
 sed -i.bak "s/\"max_validators\": 100/\"max_validators\": $MAX_VALIDATORS/g" $HOMEDIR/config/genesis.json
 

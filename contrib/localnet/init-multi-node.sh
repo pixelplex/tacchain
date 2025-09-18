@@ -90,7 +90,7 @@ for ((i = 0 ; i < VALIDATORS_COUNT ; i++)); do
   export VALIDATOR_MNEMONIC="${!mnemonic_var}"
 
   # call init.sh script to initialize the node
-  echo y | HOMEDIR=$NODEDIR $(dirname "$0")/./init.sh
+  echo y | HOMEDIR=$NODEDIR $(dirname "$0")/./init-liquidstake-for-multinode.sh
 
   # explicitly add balances to first node(node0) which will be used to collect gentxs later
   ADDRESS=$($TACCHAIND keys show validator --keyring-backend $KEYRING_BACKEND --home $NODEDIR -a)
