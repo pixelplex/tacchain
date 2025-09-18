@@ -160,7 +160,7 @@ proto-all: proto-format proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@$(protoImage) sh ./scripts/protocgen.sh
+	@$(protoImage) sh ./contrib/localnet/protocgen.sh
 	@go mod tidy 
 
 proto-format:
