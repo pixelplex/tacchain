@@ -281,7 +281,7 @@ replace (
 
 	// replace cosmos evm with our fork that uses geth v1.13.15
 	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20250825121004-d13becaea1f2
-	// Cosmos geth fork
+  
 	// replace with our fork using geth v1.13.15
 	github.com/ethereum/go-ethereum => github.com/TacBuild/go-ethereum v0.0.0-20250428082551-b4f5a8f8420a
 
