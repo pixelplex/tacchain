@@ -21,9 +21,6 @@ FROM debian:bookworm-slim
 
 COPY --from=go-builder /code/build/tacchaind /usr/bin/tacchaind
 
-RUN wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v2.2.1/libwasmvm.x86_64.so
-RUN wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v2.1.0/libwasmvm.aarch64.so
-
 WORKDIR /opt
 
 # rest server
