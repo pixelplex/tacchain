@@ -270,12 +270,12 @@ replace (
 	// Pin this pebble version to avoid breaking compilation of geth
 	github.com/cockroachdb/pebble => github.com/cockroachdb/pebble v0.0.0-20230928194634-aa077af62593
 
-	// // use Cosmos-SDK fork to enable Ledger functionality
-	// github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.50.13-0.20250319183239-53dea340efc7
-	github.com/cosmos/cosmos-sdk => github.com/pixelplex/cosmos-sdk v0.50.12-lsm-beta.0
+	// use Cosmos-SDK fork to enable Ledger functionality
+	// github.com/cosmos/cosmos-sdk => github.com/pixelplex/cosmos-sdk v0.50.12-lsm-beta.0
+	github.com/cosmos/cosmos-sdk => github.com/pixelplex/cosmos-sdk v0.0.0-20250923060405-c21481273142
 
 	// replace cosmos evm with our fork that uses geth v1.13.15
-	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20250919142836-b0364d6ecb2b
+	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20250923102517-6db6fc37344d
 
 	// replace with our fork using geth v1.13.15
 	github.com/ethereum/go-ethereum => github.com/TacBuild/go-ethereum v0.0.0-20250428082551-b4f5a8f8420a
