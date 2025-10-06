@@ -22,9 +22,10 @@ const (
 	// Bech32PrefixAccAddr defines the Bech32 prefix of an account's address.
 	Bech32PrefixAccAddr = "tac"
 
-	NodeDir        = ".tacchaind"
-	AppName        = "TacChainApp"
-	DefaultChainID = "tacchain_2391-1"
+	NodeDir                  = ".tacchaind"
+	AppName                  = "TacChainApp"
+	DefaultChainID           = "tacchain_2391-1"
+	DefaultEvmChainID uint64 = 2391
 
 	// Custom timeout commit to ensure faster block times
 	TimeoutCommit = 1 * time.Second
@@ -76,8 +77,10 @@ func SetupEvmConfig(chainID uint64) error {
 		WithExtendedEips(eips).
 		WithChainConfig(ethCfg).
 		WithEVMCoinInfo(evmvmtypes.EvmCoinInfo{
-			Denom:    baseDenom,
-			Decimals: evmvmtypes.Decimals(BaseDenomUnit),
+			Denom:         baseDenom,
+			ExtendedDenom: baseDenom,
+			DisplayDenom:  DisplayDenom,
+			Decimals:      evmvmtypes.Decimals(BaseDenomUnit),
 		}).
 		Configure()
 	if err != nil {

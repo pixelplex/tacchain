@@ -9,6 +9,7 @@ import (
 	"sort"
 
 	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	"github.com/Asphere-xyz/tacchain/utils"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 
@@ -18,27 +19,25 @@ import (
 	epochskeeper "github.com/cosmos/evm/x/epochs/keeper"
 	epochstypes "github.com/cosmos/evm/x/epochs/types"
 	"github.com/cosmos/gogoproto/proto"
-	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
 	icacontroller "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/keeper"
+	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
+	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
+	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
+	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
+	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
+	ibcconnectiontypes "github.com/cosmos/ibc-go/v10/modules/core/03-connection/types"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
-	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
-	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
-	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
-	ibcclienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
-	ibcconnectiontypes "github.com/cosmos/ibc-go/v8/modules/core/03-connection/types"
-	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cast"
 
@@ -173,7 +172,6 @@ var maccPerms = map[string][]string{
 	nft.ModuleName:                 nil,
 	// non sdk modules
 	ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-	ibcfeetypes.ModuleName:      nil,
 	icatypes.ModuleName:         nil,
 	// liquidstake module
 	liquidstaketypes.ModuleName: {authtypes.Minter, authtypes.Burner},
@@ -207,7 +205,6 @@ type TacChainApp struct {
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
 	BankKeeper            bankkeeper.BaseKeeper
-	CapabilityKeeper      *capabilitykeeper.Keeper
 	StakingKeeper         *stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
 	MintKeeper            mintkeeper.Keeper
@@ -266,13 +263,11 @@ func NewTacChainApp(
 	evmAppOptions evmconfig.EVMOptionsFn,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *TacChainApp {
-	evmconfig := evmvmtypes.GetEthChainConfig()
-
-	if evmconfig == nil {
-		panic("ethereum chain config not found")
+	var evmChainId uint64 = DefaultEvmChainID
+	if ci, err := utils.ParseChainID(cast.ToString(appOpts.Get(flags.FlagChainID))); err == nil {
+		evmChainId = ci.Uint64()
 	}
-	evmChainId := evmconfig.ChainID
-	encodingConfig := evmencoding.MakeConfig(evmChainId.Uint64())
+	encodingConfig := evmencoding.MakeConfig(evmChainId)
 
 	// Below we could construct and set an application specific mempool and
 	// ABCI 1.0 PrepareProposal and ProcessProposal handlers. These defaults are
@@ -309,7 +304,7 @@ func NewTacChainApp(
 	bApp.SetTxEncoder(encodingConfig.TxConfig.TxEncoder())
 
 	// initialize the Cosmos EVM application configuration
-	if err := evmAppOptions(evmChainId.Uint64()); err != nil {
+	if err := evmAppOptions(evmChainId); err != nil {
 		panic(err)
 	}
 
@@ -320,7 +315,7 @@ func NewTacChainApp(
 		evidencetypes.StoreKey, circuittypes.StoreKey,
 		authzkeeper.StoreKey, nftkeeper.StoreKey, group.StoreKey,
 		// non sdk store keys
-		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
+		ibcexported.StoreKey, ibctransfertypes.StoreKey,
 		icahosttypes.StoreKey, epochstypes.StoreKey, icacontrollertypes.StoreKey,
 		// liquidstake module
 		liquidstaketypes.StoreKey,
@@ -365,22 +360,6 @@ func NewTacChainApp(
 		runtime.EventService{},
 	)
 	bApp.SetParamStore(app.ConsensusParamsKeeper.ParamsStore)
-
-	// add capability keeper and ScopeToModule for ibc module
-	app.CapabilityKeeper = capabilitykeeper.NewKeeper(
-		encodingConfig.Codec,
-		keys[capabilitytypes.StoreKey],
-		memKeys[capabilitytypes.MemStoreKey],
-	)
-
-	app.ScopedIBCKeeper = app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
-	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
-	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
-	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-
-	// Applications that wish to enforce statically created ScopedKeepers should call `Seal` after creating
-	// their scoped modules in `NewApp` with `ScopeToModule`
-	app.CapabilityKeeper.Seal()
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -434,6 +413,7 @@ func NewTacChainApp(
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
 		authAddr,
+		mintkeeper.WithMintFn(WrappedTacLinearInflationFormula),
 	)
 
 	app.DistrKeeper = distrkeeper.NewKeeper(
@@ -729,7 +709,7 @@ func NewTacChainApp(
 		bank.NewAppModule(encodingConfig.Codec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
 		feegrantmodule.NewAppModule(encodingConfig.Codec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(encodingConfig.Codec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		mint.NewAppModule(encodingConfig.Codec, app.MintKeeper, app.AccountKeeper, TacLinearInflationFormula, app.GetSubspace(minttypes.ModuleName)),
+		mint.NewAppModule(encodingConfig.Codec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
 		slashing.NewAppModule(encodingConfig.Codec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
 		distr.NewAppModule(encodingConfig.Codec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		staking.NewAppModule(encodingConfig.Codec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
@@ -743,7 +723,6 @@ func NewTacChainApp(
 		consensus.NewAppModule(encodingConfig.Codec, app.ConsensusParamsKeeper),
 		circuit.NewAppModule(encodingConfig.Codec, app.CircuitKeeper),
 		// non sdk modules
-		capability.NewAppModule(encodingConfig.Codec, *app.CapabilityKeeper, false),
 		ibc.NewAppModule(app.IBCKeeper),
 		evmibctransfer.NewAppModule(app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
@@ -780,6 +759,7 @@ func NewTacChainApp(
 	// NOTE: upgrade module is required to be prioritized
 	app.ModuleManager.SetOrderPreBlockers(
 		upgradetypes.ModuleName,
+		authtypes.ModuleName,
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -788,7 +768,6 @@ func NewTacChainApp(
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 	app.ModuleManager.SetOrderBeginBlockers(
-		capabilitytypes.ModuleName,
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
 		epochstypes.ModuleName,
@@ -812,7 +791,6 @@ func NewTacChainApp(
 		govtypes.ModuleName,
 		genutiltypes.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
@@ -839,8 +817,6 @@ func NewTacChainApp(
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
-		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		distrtypes.ModuleName,
@@ -862,7 +838,6 @@ func NewTacChainApp(
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
 	genesisModuleOrder := []string{
-		capabilitytypes.ModuleName,
 		// simd modules
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -875,7 +850,6 @@ func NewTacChainApp(
 		// additional non simd modules
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
-		ibcfeetypes.ModuleName,
 		epochstypes.ModuleName,
 		// liquidstake module
 		liquidstaketypes.ModuleName,
@@ -1018,12 +992,6 @@ func (app *TacChainApp) setAnteHandler(txConfig client.TxConfig, maxGasWanted ui
 
 	// Set the AnteHandler for the app
 	app.SetAnteHandler(anteHandler)
-}
-
-func (app *TacChainApp) onPendingTx(hash common.Hash) {
-	for _, listener := range app.pendingTxListeners {
-		listener(hash)
-	}
 }
 
 // RegisterPendingTxListener is used by json-rpc server to listen to pending transactions callback.

@@ -4,8 +4,28 @@ import (
 	"context"
 
 	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
+
+func WrappedTacLinearInflationFormula(ctx sdk.Context, k *mintkeeper.Keeper) error {
+	minter, err := k.Minter.Get(ctx)
+	if err != nil {
+		return err
+	}
+	params, err := k.Params.Get(ctx)
+	if err != nil {
+		return err
+	}
+	bondedRatio, err := k.BondedRatio(ctx)
+	if err != nil {
+		return err
+	}
+	inflation := TacLinearInflationFormula(ctx, minter, params, bondedRatio)
+	minter.Inflation = inflation
+	return nil
+}
 
 // Parabolic formula
 // inflation (X) = Max inflation * (1 - ((X - Xtarget)/Xtarget)^2), where
