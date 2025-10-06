@@ -8,7 +8,7 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	evmdconfig "github.com/cosmos/evm/cmd/evmd/config"
+	evmdconfig "github.com/cosmos/evm/evmd/cmd/evmd/config"
 	"github.com/cosmos/evm/evmd/eips"
 	evmvmtypes "github.com/cosmos/evm/x/vm/types"
 	evmvmcore "github.com/ethereum/go-ethereum/core/vm"
@@ -55,7 +55,7 @@ func init() {
 
 var evmConfigSealed = false
 
-func SetupEvmConfig(chainID string) error {
+func SetupEvmConfig(chainID uint64) error {
 	if evmConfigSealed {
 		return nil
 	}
@@ -75,7 +75,10 @@ func SetupEvmConfig(chainID string) error {
 	err = evmvmtypes.NewEVMConfigurator().
 		WithExtendedEips(eips).
 		WithChainConfig(ethCfg).
-		WithEVMCoinInfo(baseDenom, uint8(BaseDenomUnit)).
+		WithEVMCoinInfo(evmvmtypes.EvmCoinInfo{
+			Denom:    baseDenom,
+			Decimals: evmvmtypes.Decimals(BaseDenomUnit),
+		}).
 		Configure()
 	if err != nil {
 		return fmt.Errorf("failed to setup EVMConfigurator: %s", err)

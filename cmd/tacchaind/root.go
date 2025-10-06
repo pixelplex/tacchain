@@ -26,8 +26,6 @@ import (
 
 	evmkeyring "github.com/cosmos/evm/crypto/keyring"
 	evmserverconfig "github.com/cosmos/evm/server/config"
-
-	evmdcmd "github.com/cosmos/evm/cmd/evmd/cmd"
 )
 
 // NewRootCmd creates a new root command for tacchaind. It is called once in the
@@ -44,7 +42,7 @@ func NewRootCmd() *cobra.Command {
 		true,
 		0,
 		simtestutil.NewAppOptionsWithFlagHome(temp),
-		evmdcmd.NoOpEvmAppOptions,
+		app.NoOpEvmAppOptions,
 	)
 
 	encodingConfig := params.EncodingConfig{

@@ -40,7 +40,6 @@ func initRootCmd(appInstance *app.TacChainApp, rootCmd *cobra.Command) {
 	cfg.Seal()
 
 	rootCmd.AddCommand(
-		evmclient.ValidateChainID(genutilcli.InitCmd(appInstance.BasicModuleManager, app.DefaultNodeHome)),
 		genutilcli.Commands(appInstance.TxConfig(), appInstance.BasicModuleManager, app.DefaultNodeHome),
 		cmtcli.NewCompletionCmd(rootCmd, true),
 		debug.Cmd(),
@@ -52,7 +51,7 @@ func initRootCmd(appInstance *app.TacChainApp, rootCmd *cobra.Command) {
 	// add Cosmos EVM' flavored TM commands to start server, etc.
 	evmserver.AddCommands(
 		rootCmd,
-		evmserver.NewDefaultStartOptions(newApp, app.DefaultNodeHome),
+		evmserver.NewDefaultStartOptions(newEvmApp, app.DefaultNodeHome),
 		appExport,
 		addModuleInitFlags,
 	)
@@ -136,6 +135,27 @@ func newApp(
 	traceStore io.Writer,
 	appOpts servertypes.AppOptions,
 ) servertypes.Application {
+	baseappOptions := server.DefaultBaseappOptions(appOpts)
+
+	return app.NewTacChainApp(
+		logger,
+		db,
+		traceStore,
+		true,
+		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
+		appOpts,
+		app.SetupEvmConfig,
+		baseappOptions...,
+	)
+}
+
+// newEvmApp creates the application
+func newEvmApp(
+	logger log.Logger,
+	db dbm.DB,
+	traceStore io.Writer,
+	appOpts servertypes.AppOptions,
+) evmserver.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
 
 	return app.NewTacChainApp(

@@ -2,12 +2,11 @@ package app
 
 import (
 	"bytes"
+	"encoding/hex"
 	"fmt"
 	"strconv"
 	"testing"
 	"time"
-
-	"encoding/hex"
 
 	errorsmod "cosmossdk.io/errors"
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -231,4 +230,8 @@ func NewPubKeyFromHex(pk string) (res cryptotypes.PubKey) {
 		panic(errorsmod.Wrap(errors.ErrInvalidPubKey, "invalid pubkey size"))
 	}
 	return &ed25519.PubKey{Key: pkBytes}
+}
+
+func NoOpEvmAppOptions(uint64) error {
+	return nil
 }

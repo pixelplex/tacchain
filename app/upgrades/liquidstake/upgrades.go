@@ -46,11 +46,7 @@ func CreateUpgradeHandler(
 		}
 		ak.BankKeeper.SetDenomMetaData(ctx, GTACMetadata)
 
-		erc20Params := ak.Erc20Keeper.GetParams(sdkCtx)
-		erc20Params.NativePrecompiles = append(erc20Params.NativePrecompiles, lsmBondCommonAddress.String())
-		if err := ak.Erc20Keeper.SetParams(sdkCtx, erc20Params); err != nil {
-			return newVM, err
-		}
+		ak.Erc20Keeper.SetNativePrecompile(sdkCtx, lsmBondCommonAddress)
 
 		lsmTokenPair := evmerc20types.NewTokenPair(lsmBondCommonAddress, lsmBondDenom, evmerc20types.OWNER_MODULE)
 
