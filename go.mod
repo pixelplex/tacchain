@@ -54,7 +54,6 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.48.1 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.48.1 // indirect
 	github.com/cncf/xds/go v0.0.0-20250501225837-2ac532fd4443 // indirect
-	github.com/cosmos/ibc-go/v8 v8.4.0 // indirect
 	github.com/crate-crypto/go-eth-kzg v1.3.0 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.32.4 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.2.1 // indirect
@@ -296,8 +295,8 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/pixelplex/tac-cosmos-sdk v0.53.4-tac-lsm
 
 	// replace cosmos evm with our fork that uses geth v1.13.15
-	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.4.1-tac-lsm
-	github.com/cosmos/evm/evmd => github.com/pixelplex/tac-evm/evmd v0.0.0-20251006155337-0613a321693f
+	github.com/cosmos/evm => github.com/pixelplex/tac-evm v0.0.0-20251007071632-9f9e0de57c85
+	github.com/cosmos/evm/evmd => github.com/pixelplex/tac-evm/evmd v0.0.0-20251007071632-9f9e0de57c85
 
 	// replace with our fork using geth v1.13.15
 	// github.com/ethereum/go-ethereum => github.com/TacBuild/go-ethereum v0.0.0-20250428082551-b4f5a8f8420a

@@ -874,8 +874,6 @@ github.com/cosmos/ibc-go/modules/capability v1.0.1 h1:ibwhrpJ3SftEEZRxCRkH0fQZ9s
 github.com/cosmos/ibc-go/modules/capability v1.0.1/go.mod h1:rquyOV262nGJplkumH+/LeYs04P3eV8oB7ZM4Ygqk4E=
 github.com/cosmos/ibc-go/v10 v10.0.0-beta.0.0.20250528142215-7d579b91ac6b h1:+TaXFL0WksE7yBs6DqHrRIDtkKZfu3+Lirbs6rK4N20=
 github.com/cosmos/ibc-go/v10 v10.0.0-beta.0.0.20250528142215-7d579b91ac6b/go.mod h1:AQ76dzfU5i3UB5UiktWe6q7hpbPyBXuZcnjMQekBkHs=
-github.com/cosmos/ibc-go/v8 v8.4.0 h1:K2PfX0AZ+1XKZytHGEMuSjQXG/MZshPb83RSTQt2+cE=
-github.com/cosmos/ibc-go/v8 v8.4.0/go.mod h1:zh6x1osR0hNvEcFrC/lhGD08sMfQmr9wHVvZ/mRWMCs=
 github.com/cosmos/ics23/go v0.11.0 h1:jk5skjT0TqX5e5QJbEnwXIS2yI2vnmLOgpQPeM5RtnU=
 github.com/cosmos/ics23/go v0.11.0/go.mod h1:A8OjxPE67hHST4Icw94hOxxFEJMBG031xIGF/JHNIY0=
 github.com/cosmos/keyring v1.2.0 h1:8C1lBP9xhImmIabyXW4c3vFjjLiBdGCmfLUfeZlV1Yo=
@@ -1550,10 +1548,10 @@ github.com/pion/transport/v3 v3.0.1 h1:gDTlPJwROfSfz6QfSi0ZmeCSkFcnWWiiR9ES0ouAN
 github.com/pion/transport/v3 v3.0.1/go.mod h1:UY7kiITrlMv7/IKgd5eTUcaahZx5oUN3l9SzK5f5xE0=
 github.com/pixelplex/tac-cosmos-sdk v0.53.4-tac-lsm h1:wDtTdyatZYcywnbTVndGDsq2EcuK71qiQwjwhHmIGO0=
 github.com/pixelplex/tac-cosmos-sdk v0.53.4-tac-lsm/go.mod h1:ynUwLGFGEYUg6faxaUmmhBLaWVJdI9CTX2nOg0YtFo0=
-github.com/pixelplex/tac-evm v0.4.1-tac-lsm h1:7p8J3oNOKSCIbcv/NkGw9Fkefsq50rYAnfxWhUrG8wA=
-github.com/pixelplex/tac-evm v0.4.1-tac-lsm/go.mod h1:jdHwM5tW2AaY3DxVUcsjj/dTAhc3noxqPgR1Juc9vdE=
-github.com/pixelplex/tac-evm/evmd v0.0.0-20251006155337-0613a321693f h1:diZr8H6cJh+vJvWLi4oVQ7lWkfsgUDVy1Uhxde8+S7Y=
-github.com/pixelplex/tac-evm/evmd v0.0.0-20251006155337-0613a321693f/go.mod h1:o/S+XXxtbzYuVvAqK08CyzHlXgpT7sVxzpzqUxf9poQ=
+github.com/pixelplex/tac-evm v0.0.0-20251007071632-9f9e0de57c85 h1:dsCXOTRFnWvxy8mdz2opPbTqZmTWTwKC3nd6tI0cIKs=
+github.com/pixelplex/tac-evm v0.0.0-20251007071632-9f9e0de57c85/go.mod h1:7ocC8c9S/fYS64ul/+5fo7hV0oCycrpv1u3Uq/PjJ5k=
+github.com/pixelplex/tac-evm/evmd v0.0.0-20251007071632-9f9e0de57c85 h1:7gB4f0HL4ORV6hipfUJz0WMKf6FDIzExfu7hBQQy8jQ=
+github.com/pixelplex/tac-evm/evmd v0.0.0-20251007071632-9f9e0de57c85/go.mod h1:HgJm6TUI1w5X568ffMh630YirR4XkYcO8HdqXcQzvDk=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
