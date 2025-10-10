@@ -24,7 +24,20 @@ GOAL_BONDED=${GOAL_BONDED:-0.6}
 SLASH_DOWNTIME_PENALTY=${SLASH_DOWNTIME_PENALTY:-0.001}
 SLASH_SIGNED_BLOCKS_WINDOW=${SLASH_SIGNED_BLOCKS_WINDOW:-21600}
 MAX_VALIDATORS=${MAX_VALIDATORS:-20}
+UNBONDING_TIME=${UNBONDING_TIME:-1814400s}
 COMMUNITY_TAX=${COMMUNITY_TAX:-0.00}
+TOTAL_WEIGHT=${TOTAL_WEIGHT:-10000}
+
+# addresses for liqudistake initialization
+VALIDATORS_COUNT=${VALIDATORS_COUNT:-1}
+if [ -n "$VALIDATORS_ADDRESSES_STR" ]; then
+    # Convert space-separated string back to array
+    read -ra VALIDATORS_ADDRESSES <<< "$VALIDATORS_ADDRESSES_STR"
+else
+    VALIDATORS_ADDRESSES=(
+        "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt"
+    )
+fi
 
 # ports
 RPC_PORT=${RPC_PORT:-26657}
@@ -89,7 +102,6 @@ jq '
     "storage": []
   }]
 ' $HOMEDIR/config/genesis.json > $HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
-
 
 # multicall (https://github.com/mds1/multicall3)
 jq '
@@ -247,16 +259,36 @@ jq '
 }
 ' $HOMEDIR/config/genesis.json >$HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
 
-jq '
+# Build whitelisted_validators array dynamically
+LIQUID_VALIDATORS="["
+WHITELISTED_VALIDATORS="["
+SINGLE_WEIGHT=$((TOTAL_WEIGHT / VALIDATORS_COUNT))
+COUNT_1=$((VALIDATORS_COUNT - 1))
+for ((i = 0 ; i < VALIDATORS_COUNT ; i++)); do
+  WEIGHT=$SINGLE_WEIGHT
+  if [ "$i" -eq "$COUNT_1" ]; then
+    WEIGHT=$((SINGLE_WEIGHT * $COUNT_1))
+    WEIGHT=$((TOTAL_WEIGHT - WEIGHT))
+  fi
+
+  VALIDATOR_ADDR="${VALIDATORS_ADDRESSES[i]}"
+  if [ $i -eq 0 ]; then
+    WHITELISTED_VALIDATORS+="{\"validator_address\": \"$VALIDATOR_ADDR\", \"target_weight\": \"$WEIGHT\"}"
+    LIQUID_VALIDATORS+="{\"operator_address\": \"$VALIDATOR_ADDR\"}"
+  else
+    WHITELISTED_VALIDATORS+=", {\"validator_address\": \"$VALIDATOR_ADDR\", \"target_weight\": \"$WEIGHT\"}"
+    LIQUID_VALIDATORS+=", {\"operator_address\": \"$VALIDATOR_ADDR\"}"
+  fi
+done
+WHITELISTED_VALIDATORS+="]"
+LIQUID_VALIDATORS+="]"
+
+# Apply liquidstake configuration with dynamically built arrays
+jq --argjson whitelisted_validators "$WHITELISTED_VALIDATORS" --argjson liquid_validators "$LIQUID_VALIDATORS" '
 .app_state.liquidstake = {
       "params": {
         "liquid_bond_denom": "stk/utac",
-        "whitelisted_validators": [
-          {
-            "validator_address": "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt",
-            "target_weight": "10000"
-          }
-        ],
+        "whitelisted_validators": $whitelisted_validators,
         "unstake_fee_rate": "0.000000000000000000",
         "lsm_disabled": false,
         "min_liquid_stake_amount": "1000",
@@ -266,16 +298,14 @@ jq '
         "whitelist_admin_address": "tac1w2q3mashs2k4wcpqzs5q5xewnhnnr7wslr34safzvwqzvuqh3gjqn6xzrj",
         "module_paused": false
       },
-      "liquid_validators": [
-        {
-          "operator_address": "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt"
-        }
-      ]
+      "liquid_validators": $liquid_validators
 }
 ' $HOMEDIR/config/genesis.json >$HOMEDIR/config/genesis_patched.json && mv $HOMEDIR/config/genesis_patched.json $HOMEDIR/config/genesis.json
 
 # set max validators
 sed -i.bak "s/\"max_validators\": 100/\"max_validators\": $MAX_VALIDATORS/g" $HOMEDIR/config/genesis.json
+
+sed -i.bak "s/\"unbonding_time\": \"1814400s\"/\"unbonding_time\": \"$UNBONDING_TIME\"/g" $HOMEDIR/config/genesis.json
 
 # set community tax
 sed -i.bak "s/\"community_tax\": \"0.020000000000000000\"/\"community_tax\": \"$COMMUNITY_TAX\"/g" $HOMEDIR/config/genesis.json
