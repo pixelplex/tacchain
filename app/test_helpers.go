@@ -79,3 +79,4 @@ func NewTacChainAppWithCustomOptions(t *testing.T, isCheckTx bool, invCheckPerio
 
 	return app
 }
+

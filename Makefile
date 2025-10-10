@@ -88,6 +88,8 @@ go.sum: go.mod
 clean:
 	rm -rf build/
 
+.PHONY: all install build build-windows-client go.sum clean
+
 ###############################################################################
 ###                                 Tests                                   ###
 ###############################################################################
@@ -121,6 +123,8 @@ test-ledger:
 test-solidity:
 	./tests/solidity/run-solidity-tests.sh
 
+.PHONY: test test-unit test-race test-e2e test-cover test-benchmark test-localnet-params test-localnet-evm test-ledger test-solidity
+
 ###############################################################################
 ###                                Networks                                 ###
 ###############################################################################
@@ -138,4 +142,6 @@ localnet-init-multi-node:
 
 localnet-start:
 	./contrib/localnet/start.sh
+
+.PHONY: localnet-start localnet-init localnet-init-multi-node
 

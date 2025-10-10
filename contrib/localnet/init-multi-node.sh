@@ -5,14 +5,15 @@ export TACCHAIND=${TACCHAIND:-$(which tacchaind)}
 export HOMEDIR=${HOMEDIR:-./.testnet}
 export CHAIN_ID=${CHAIN_ID:-tacchain_239-1}
 export KEYRING_BACKEND=${KEYRING_BACKEND:-test}
-export VALIDATORS_COUNT=4
 export VALIDATOR_NAME=${VALIDATOR_NAME:-TAC Validator}
 export VALIDATOR_IDENTITY=${VALIDATOR_IDENTITY:-4DD1A5E1D03FA12D}
 export VALIDATOR_WEBSITE=${VALIDATOR_WEBSITE:-https://tac.build/}
+export VALIDATORS_COUNT=4
 export VALIDATOR_1_MNEMONIC=${VALIDATOR_1_MNEMONIC:-"island mail dice alien project surround orchard ball twist worth innocent arrange assume dragon rotate enough flee rapid rookie swim addict ice destroy run"} # tac15lvhklny0khnwy7hgrxsxut6t6ku2cgknw79fr
 export VALIDATOR_2_MNEMONIC=${VALIDATOR_2_MNEMONIC:-"margin funny awkward answer squirrel inner venue spell expose close tank salute series neck oval real bunker can text chronic capital teach arena extend"} # tac16p9nqhd348aaungp5p5vjuwedaw03pvywdzwdk
 export VALIDATOR_3_MNEMONIC=${VALIDATOR_3_MNEMONIC:-"that away spike absorb aspect loan shuffle purchase number knock cover night library shock mask cheese upset float churn wall fox veteran actress motor"} # tac1qp4h82jgqqa5ezgzck8z75dn8q0t0nv45pzh6v
 export VALIDATOR_4_MNEMONIC=${VALIDATOR_4_MNEMONIC:-"floor wrong idle cloth nose material forward urge grape always into buyer atom excuse odor decade crouch purchase shadow energy voyage pact skate pigeon"} # tac1d30q62hl0wn6n5m39sd0yqswq6jr3hntt2cm4n
+export VALIDATORS_ADDRESSES_STR="${VALIDATORS_ADDRESSES_STR:-"tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt tacvaloper16p9nqhd348aaungp5p5vjuwedaw03pvynleqq7 tacvaloper1qp4h82jgqqa5ezgzck8z75dn8q0t0nv4fneehy tacvaloper1d30q62hl0wn6n5m39sd0yqswq6jr3hntkcr4cm"}"
 export GENESIS_ACC_1_ADDRESS=${GENESIS_ACC_1_ADDRESS:-}
 export GENESIS_ACC_2_ADDRESS=${GENESIS_ACC_2_ADDRESS:-}
 export INITIAL_SUPPLY=${INITIAL_SUPPLY:-10000000000000000000000000000}
@@ -30,7 +31,6 @@ export SLASH_DOWNTIME_PENALTY=${SLASH_DOWNTIME_PENALTY:-0.001}
 export SLASH_SIGNED_BLOCKS_WINDOW=${SLASH_SIGNED_BLOCKS_WINDOW:-21600}
 export MAX_VALIDATORS=${MAX_VALIDATORS:-20}
 export COMMUNITY_TAX=${COMMUNITY_TAX:-0.00}
-
 
 # prompt user for confirmation before cleanup
 read -p "This will remove all existing data in $HOMEDIR. Do you want to proceed? (y/n): " confirm
@@ -90,7 +90,7 @@ for ((i = 0 ; i < VALIDATORS_COUNT ; i++)); do
   mnemonic_var="VALIDATOR_$((i+1))_MNEMONIC"
   export VALIDATOR_MNEMONIC="${!mnemonic_var}"
 
-  # call init.sh script to initialize the node
+  # call generalized init.sh script to initialize the node
   echo y | HOMEDIR=$NODEDIR $(dirname "$0")/./init.sh
 
   # explicitly add balances to first node(node0) which will be used to collect gentxs later

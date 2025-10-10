@@ -14,6 +14,9 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	dbm "github.com/cosmos/cosmos-db"
+	"github.com/cosmos/evm/x/epochs"
+	epochskeeper "github.com/cosmos/evm/x/epochs/keeper"
+	epochstypes "github.com/cosmos/evm/x/epochs/types"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
@@ -97,6 +100,7 @@ import (
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
@@ -152,6 +156,10 @@ import (
 	evmibctransferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	evmvmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	evmvmtypes "github.com/cosmos/evm/x/vm/types"
+
+	"github.com/cosmos/evm/x/liquidstake"
+	liquidstakekeeper "github.com/cosmos/evm/x/liquidstake/keeper"
+	liquidstaketypes "github.com/cosmos/evm/x/liquidstake/types"
 )
 
 // module account permissions
@@ -167,6 +175,8 @@ var maccPerms = map[string][]string{
 	ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:      nil,
 	icatypes.ModuleName:         nil,
+	// liquidstake module
+	liquidstaketypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	// Cosmos EVM modules
 	evmvmtypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
 	evmfeemarkettypes.ModuleName: nil,
@@ -232,6 +242,10 @@ type TacChainApp struct {
 
 	// module configurator
 	configurator module.Configurator
+
+	EpochsKeeper *epochskeeper.Keeper
+	// liquidstake keeper
+	LiquidStakeKeeper liquidstakekeeper.Keeper
 
 	// Cosmos EVM keepers
 	FeeMarketKeeper evmfeemarketkeeper.Keeper
@@ -299,7 +313,9 @@ func NewTacChainApp(
 		authzkeeper.StoreKey, nftkeeper.StoreKey, group.StoreKey,
 		// non sdk store keys
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
-		icahosttypes.StoreKey, icacontrollertypes.StoreKey,
+		icahosttypes.StoreKey, epochstypes.StoreKey, icacontrollertypes.StoreKey,
+		// liquidstake module
+		liquidstaketypes.StoreKey,
 		// Cosmos EVM store keys
 		evmvmtypes.StoreKey, evmfeemarkettypes.StoreKey, evmerc20types.StoreKey,
 	)
@@ -545,6 +561,28 @@ func NewTacChainApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	app.EpochsKeeper = epochskeeper.NewKeeper(keys[epochstypes.StoreKey])
+
+	// liquidstake keeper
+	app.LiquidStakeKeeper = liquidstakekeeper.NewKeeper(
+		encodingConfig.Codec,
+		keys[liquidstaketypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		*app.StakingKeeper,
+		app.MintKeeper,
+		app.DistrKeeper,
+		app.SlashingKeeper,
+		app.MsgServiceRouter(),
+		authAddr,
+	)
+
+	app.EpochsKeeper.SetHooks(
+		epochstypes.NewMultiEpochHooks(
+			app.LiquidStakeKeeper.EpochHooks(),
+		),
+	)
+
 	// Cosmos EVM keepers
 	app.FeeMarketKeeper = evmfeemarketkeeper.NewKeeper(
 		encodingConfig.Codec, authtypes.NewModuleAddress(govtypes.ModuleName),
@@ -677,6 +715,7 @@ func NewTacChainApp(
 			app.GovKeeper,
 			app.SlashingKeeper,
 			app.EvidenceKeeper,
+			app.LiquidStakeKeeper,
 		),
 	)
 
@@ -707,6 +746,7 @@ func NewTacChainApp(
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		epochs.NewAppModule(*app.EpochsKeeper),
 		authzmodule.NewAppModule(encodingConfig.Codec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		groupmodule.NewAppModule(encodingConfig.Codec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		nftmodule.NewAppModule(encodingConfig.Codec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
@@ -719,6 +759,8 @@ func NewTacChainApp(
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.AppModule{},
+		// liquidstake module
+		liquidstake.NewAppModule(app.LiquidStakeKeeper),
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
 		// Cosmos EVM modules
@@ -760,6 +802,9 @@ func NewTacChainApp(
 		capabilitytypes.ModuleName,
 		distrtypes.ModuleName,
 		stakingtypes.ModuleName,
+		epochstypes.ModuleName,
+		// liquidstake module after staking
+		liquidstaketypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
 		ibcexported.ModuleName,
@@ -799,7 +844,9 @@ func NewTacChainApp(
 		feegrant.ModuleName,
 		group.ModuleName,
 		// no-op modules
+		epochstypes.ModuleName,
 		stakingtypes.ModuleName,
+		liquidstaketypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
@@ -840,6 +887,9 @@ func NewTacChainApp(
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		epochstypes.ModuleName,
+		// liquidstake module
+		liquidstaketypes.ModuleName,
 
 		// Cosmos EVM modules
 		//
@@ -1028,6 +1078,7 @@ func (app *TacChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain)
 	if err != nil {
 		panic(err)
 	}
+
 	response, err := app.ModuleManager.InitGenesis(ctx, app.appCodec, genesisState)
 	return response, err
 }
@@ -1088,11 +1139,25 @@ func (app *TacChainApp) AutoCliOpts() autocli.AppOptions {
 func (app *TacChainApp) DefaultGenesis() map[string]json.RawMessage {
 	genesis := app.BasicModuleManager.DefaultGenesis(app.appCodec)
 
+	// Mint denom configuration
+	mintGenState := minttypes.DefaultGenesisState()
+	mintGenState.Params.MintDenom = BaseDenom
+	genesis[minttypes.ModuleName] = app.appCodec.MustMarshalJSON(mintGenState)
+
+	// EVM genesis configuration
 	evmGenState := evmd.NewEVMGenesisState()
+	evmGenState.Params.ActiveStaticPrecompiles = evmvmtypes.AvailableStaticPrecompiles
 	genesis[evmvmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
 
+	// ERC20 genesis configuration
 	erc20GenState := evmerc20types.DefaultGenesisState()
+	erc20GenState.Params.EnableErc20 = true
 	genesis[evmerc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
+
+	// Liquidstake
+	lsGenState := liquidstaketypes.DefaultGenesisState()
+	lsGenState.Params.ModulePaused = false
+	genesis[liquidstaketypes.ModuleName] = app.appCodec.MustMarshalJSON(lsGenState)
 
 	return genesis
 }
