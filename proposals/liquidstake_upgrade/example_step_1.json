@@ -4,7 +4,7 @@
       "@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
       "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
       "plan": {
-        "name": "liquidstake",
+        "name": "v1.0.2",
         "height": "50",
         "info": "Liquidstake module implementation",
         "upgraded_client_state": null

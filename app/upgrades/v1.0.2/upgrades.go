@@ -1,4 +1,6 @@
-package liquidstake_upgrade
+package v102
+
+// Upgrade for implementing liquid stake module
 
 import (
 	"context"
@@ -7,14 +9,17 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/Asphere-xyz/tacchain/app/upgrades"
-	"github.com/Asphere-xyz/tacchain/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	evmerc20types "github.com/cosmos/evm/x/erc20/types"
+
+	"github.com/ethereum/go-ethereum/common"
+	"golang.org/x/crypto/sha3"
+
 )
 
 // UpgradeName defines the on-chain upgrade name
-const UpgradeName = "liquidstake"
+const UpgradeName = "v1.0.2"
 
 var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
@@ -23,6 +28,14 @@ var Upgrade = upgrades.Upgrade{
 		Added:   []string{"utacliquidstake", "epochs"},
 		Deleted: []string{},
 	},
+}
+
+func generateAddressFromDenom(denom string) (common.Address, error) {
+	hash := sha3.NewLegacyKeccak256()
+	if _, err := hash.Write([]byte(denom)); err != nil {
+		return common.Address{}, err
+	}
+	return common.BytesToAddress(hash.Sum(nil)), nil
 }
 
 func CreateUpgradeHandler(
@@ -40,7 +53,7 @@ func CreateUpgradeHandler(
 
 		// Register gTAC token pair
 		lsmBondDenom := ak.LiquidStakeKeeper.LiquidBondDenom(sdkCtx)
-		lsmBondCommonAddress, err := utils.GenerateAddressFromDenom(lsmBondDenom)
+		lsmBondCommonAddress, err := generateAddressFromDenom(lsmBondDenom)
 		if err != nil {
 			return newVM, err
 		}

@@ -1,4 +1,6 @@
-package liquidstake_upgrade
+package v102
+
+// Upgrade for implementing liquid stake module
 
 import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
