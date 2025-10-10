@@ -23,6 +23,7 @@ require (
 	github.com/cosmos/evm v0.1.1-0.20250328143818-59c573a37f8b
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
+	github.com/cosmos/ibc-go/v8 v8.7.0
 	github.com/ethereum/go-ethereum v1.15.5
 	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
@@ -31,8 +32,6 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
 )
-
-require github.com/cosmos/ibc-go/v8 v8.7.0
 
 require (
 	cloud.google.com/go v0.115.0 // indirect
