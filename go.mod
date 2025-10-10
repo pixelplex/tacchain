@@ -6,7 +6,6 @@ require (
 	cosmossdk.io/api v0.7.6
 	cosmossdk.io/client/v2 v2.0.0-beta.7
 	cosmossdk.io/core v0.11.1
-	cosmossdk.io/errors v1.0.1
 	cosmossdk.io/log v1.5.0
 	cosmossdk.io/math v1.5.0
 	cosmossdk.io/simapp v0.0.0-20231103111158-e83a20081ced
@@ -32,6 +31,8 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
 )
+
+require cosmossdk.io/errors v1.0.1 // indirect
 
 require (
 	cloud.google.com/go v0.115.0 // indirect
@@ -269,10 +270,10 @@ replace (
 	// Pin this pebble version to avoid breaking compilation of geth
 	github.com/cockroachdb/pebble => github.com/cockroachdb/pebble v0.0.0-20230928194634-aa077af62593
 
-	// use Cosmos-SDK fork to enable Ledger functionality
+	// replace to cosmos-sdk fork for liquid stake support. See: https://github.com/TacBuild/cosmos-sdk/pull/2
 	github.com/cosmos/cosmos-sdk => github.com/TacBuild/cosmos-sdk v0.0.0-20251010131633-e43d8d10a9a9
 
-	// replace cosmos evm with our fork that uses geth v1.13.15
+	// replace to cosmos/evm fork for liquid stake support. See: https://github.com/TacBuild/evm/pull/9
 	github.com/cosmos/evm => github.com/TacBuild/evm v0.0.0-20251010145635-9055209fc1d5
 
 	// replace with our fork using geth v1.13.15
