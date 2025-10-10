@@ -145,32 +145,3 @@ localnet-start:
 
 .PHONY: localnet-start localnet-init localnet-init-multi-node
 
-###############################################################################
-###                                Protobuf                                 ###
-###############################################################################
-
-DOCKER := $(shell which docker)
-BUILDDIR ?= $(CURDIR)/build
-
-protoVer=0.14.0
-protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
-protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
-
-proto-all: proto-format proto-gen
-
-proto-gen:
-	@echo "Generating Protobuf files"
-	@$(protoImage) sh ./contrib/localnet/protocgen.sh
-	@go mod tidy 
-
-proto-format:
-	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
-
-proto-check-breaking:
-	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
-
-proto-update-deps:
-	@echo "Updating Protobuf dependencies"
-	$(DOCKER) run --rm -v $(CURDIR)/proto:/workspace --workdir /workspace $(protoImageName) buf mod update
-
-.PHONY: proto-all proto-gen proto-format proto-check-breaking proto-update-deps
