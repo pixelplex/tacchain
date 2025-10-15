@@ -35,6 +35,7 @@ func (app *TacChainApp) RegisterUpgradeHandlers() {
 		LiquidStakeKeeper:     &app.LiquidStakeKeeper,
 		BankKeeper:            app.BankKeeper,
 		Erc20Keeper:           &app.Erc20Keeper,
+		StakingKeeper:         app.StakingKeeper,
 	}
 	app.GetStoreKeys()
 	// register all upgrade handlers
