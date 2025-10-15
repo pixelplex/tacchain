@@ -148,8 +148,8 @@ func initializeNewValidatorFields(ctx context.Context, ak *upgrades.AppKeepers) 
 
 func getAdminAddressFromPlanInfo(info string) (string, error) {
 	key := "whitelist_admin_address"
-	addressPrefix := sdk.Bech32MainPrefix
-	re := regexp.MustCompile(key + `:\s*(` + addressPrefix + `[a-zA-Z0-9]{42})`)
+	addressPrefix := sdk.GetConfig().GetBech32AccountAddrPrefix()
+	re := regexp.MustCompile(key + `:\s*(` + addressPrefix + `[a-zA-Z0-9]+)`)
 	matches := re.FindStringSubmatch(info)
 
 	var addr string
