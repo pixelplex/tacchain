@@ -5,8 +5,8 @@
       "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
       "plan": {
         "name": "v1.0.2",
-        "height": "1000",
-        "info": "This proposal aims to add liquid stake possibility for the TAC network",
+        "height": "400",
+        "info": "This proposal aims to add liquid stake possibility for the TAC network. whitelist_admin_address: tac15lvhklny0khnwy7hgrxsxut6t6ku2cgknw79fr",
         "upgraded_client_state": null
       }
     },
@@ -69,7 +69,7 @@
           "0x0000000000000000000000000000000000001600"
         ]
       }
-     }
+    }
   ],
   "metadata": "https://github.com/TacBuild/tacchain/pull/61",
   "deposit": "1000000000000000000utac",
