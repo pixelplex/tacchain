@@ -4,6 +4,9 @@ package v102
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"regexp"
 
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
@@ -19,12 +22,10 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
+var WhitelistAdminAddressNotFound = errors.New("failed to find whitelist admin address")
+
 // UpgradeName defines the on-chain upgrade name
 const UpgradeName = "v1.0.2"
-
-// AdminAddress stands for the authority account that can unilaterally change any of the liquidstake modules params
-// note: testnet
-const AdminAddress = "tac15lvhklny0khnwy7hgrxsxut6t6ku2cgknw79fr"
 
 var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
@@ -33,51 +34,6 @@ var Upgrade = upgrades.Upgrade{
 		Added:   []string{"utacliquidstake", "epochs"},
 		Deleted: []string{},
 	},
-}
-
-func generateAddressFromDenom(denom string) (common.Address, error) {
-	hash := sha3.NewLegacyKeccak256()
-	if _, err := hash.Write([]byte(denom)); err != nil {
-		return common.Address{}, err
-	}
-	return common.BytesToAddress(hash.Sum(nil)), nil
-}
-
-func initializeNewValidatorFields(ctx context.Context, ak *upgrades.AppKeepers) error {
-	params, err := ak.StakingKeeper.GetParams(ctx)
-	if err != nil {
-		return err
-	}
-
-	validators, err := ak.StakingKeeper.GetValidators(ctx, params.MaxValidators)
-	if err != nil {
-		return err
-	}
-
-	for _, validator := range validators {
-		newValidator := validator
-		newValidator.ValidatorBondShares = math.ZeroInt().ToLegacyDec()
-		newValidator.LiquidShares = math.ZeroInt().ToLegacyDec()
-
-		err = ak.StakingKeeper.RemoveValidator(ctx, sdk.ValAddress(validator.OperatorAddress))
-		if err != nil {
-			return err
-		}
-		err = ak.StakingKeeper.SetValidator(ctx, newValidator)
-		if err != nil {
-			return err
-		}
-		err = ak.StakingKeeper.SetValidatorByConsAddr(ctx, newValidator)
-		if err != nil {
-			return err
-		}
-		err = ak.StakingKeeper.SetValidatorByPowerIndex(ctx, newValidator)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 func CreateUpgradeHandler(
@@ -111,9 +67,18 @@ func CreateUpgradeHandler(
 
 		ak.Erc20Keeper.SetToken(sdkCtx, lsmTokenPair)
 
+		logger := sdkCtx.Logger()
 		params := ak.LiquidStakeKeeper.GetParams(sdkCtx)
-		params.WhitelistAdminAddress = AdminAddress
-		ak.LiquidStakeKeeper.SetParams(sdkCtx, params)
+		adminAddress, err := getAdminAddressFromPlanInfo(plan.Info)
+		switch err {
+		case WhitelistAdminAddressNotFound, nil:
+		default:
+			logger.Error("invalid whitelist admin address in plan info", "error", err)
+		}
+		params.WhitelistAdminAddress = adminAddress
+		if err := ak.LiquidStakeKeeper.SetParams(sdkCtx, params); err != nil {
+			return newVM, fmt.Errorf("failed to set params for liquidstake module: %w", err)
+		}
 
 		stakingParams, err := ak.StakingKeeper.GetParams(ctx)
 		if err != nil {
@@ -124,11 +89,77 @@ func CreateUpgradeHandler(
 		stakingParams.GlobalLiquidStakingCap = stakingtypes.DefaultGlobalLiquidStakingCap
 		stakingParams.ValidatorLiquidStakingCap = stakingtypes.DefaultValidatorLiquidStakingCap
 
-		ak.StakingKeeper.SetParams(ctx, stakingParams)
+		if err := ak.StakingKeeper.SetParams(ctx, stakingParams); err != nil {
+			return newVM, fmt.Errorf("failed to set params for staking module: %w", err)
+		}
 
-		initializeNewValidatorFields(ctx, ak)
+		if err := initializeNewValidatorFields(ctx, ak); err != nil {
+			return newVM, fmt.Errorf("failed to initialize new validtor fields: %w", err)
+		}
 
 		return newVM, nil
 	}
 }
 
+func generateAddressFromDenom(denom string) (common.Address, error) {
+	hash := sha3.NewLegacyKeccak256()
+	if _, err := hash.Write([]byte(denom)); err != nil {
+		return common.Address{}, err
+	}
+	return common.BytesToAddress(hash.Sum(nil)), nil
+}
+
+func initializeNewValidatorFields(ctx context.Context, ak *upgrades.AppKeepers) error {
+	params, err := ak.StakingKeeper.GetParams(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get staking params: %w", err)
+	}
+
+	validators, err := ak.StakingKeeper.GetValidators(ctx, params.MaxValidators)
+	if err != nil {
+		return fmt.Errorf("failed to get validators: %w", err)
+	}
+
+	for _, validator := range validators {
+		newValidator := validator
+		newValidator.ValidatorBondShares = math.LegacyZeroDec()
+		newValidator.LiquidShares = math.LegacyZeroDec()
+
+		err = ak.StakingKeeper.RemoveValidator(ctx, sdk.ValAddress(validator.OperatorAddress))
+		if err != nil {
+			return fmt.Errorf("failed to remove validator: %w", err)
+		}
+		err = ak.StakingKeeper.SetValidator(ctx, newValidator)
+		if err != nil {
+			return fmt.Errorf("failed to set validator: %w", err)
+		}
+		err = ak.StakingKeeper.SetValidatorByConsAddr(ctx, newValidator)
+		if err != nil {
+			return fmt.Errorf("failed to set validator by consensus address: %w", err)
+		}
+		err = ak.StakingKeeper.SetValidatorByPowerIndex(ctx, newValidator)
+		if err != nil {
+			return fmt.Errorf("failed to set validator by power index: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func getAdminAddressFromPlanInfo(info string) (string, error) {
+	key := "whitelist_admin_address"
+	addressPrefix := sdk.Bech32MainPrefix
+	re := regexp.MustCompile(key + `:\s*(` + addressPrefix + `[a-zA-Z0-9]{42})`)
+	matches := re.FindStringSubmatch(info)
+
+	var addr string
+	if len(matches) > 1 {
+		addr = matches[1]
+	} else {
+		return "", WhitelistAdminAddressNotFound
+	}
+	if _, err := sdk.AccAddressFromBech32(addr); err != nil {
+		return "", fmt.Errorf("failed to validate whitelist admin address %s: %w", addr, err)
+	}
+	return addr, nil
+}
