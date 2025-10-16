@@ -14,6 +14,7 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	evmerc20keeper "github.com/cosmos/evm/x/erc20/keeper"
@@ -31,6 +32,7 @@ type AppKeepers struct {
 	LiquidStakeKeeper     *liquidstakekeeper.Keeper
 	BankKeeper            bankkeeper.Keeper
 	Erc20Keeper           *evmerc20keeper.Keeper
+	StakingKeeper         *stakingkeeper.Keeper
 }
 
 type ModuleManager interface {

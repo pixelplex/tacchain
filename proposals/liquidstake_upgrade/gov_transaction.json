@@ -1,33 +1,14 @@
 {
   "messages": [
     {
-      "@type": "/tac.liquidstake.v1beta1.MsgUpdateParams",
+      "@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
       "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
-      "params": {
-        "liquid_bond_denom": "stk/utac",
-        "unstake_fee_rate": "0.000000000000000000",
-        "lsm_disabled": true,
-        "min_liquid_stake_amount": "1000",
-        "cw_locked_pool_address": "",
-        "fee_account_address": "tac1w2q3mashs2k4wcpqzs5q5xewnhnnr7wslr34safzvwqzvuqh3gjqn6xzrj",
-        "autocompound_fee_rate": "0.050000000000000000",
-        "whitelist_admin_address": "tac1w2q3mashs2k4wcpqzs5q5xewnhnnr7wslr34safzvwqzvuqh3gjqn6xzrj"
+      "plan": {
+        "name": "v1.0.2",
+        "height": "400",
+        "info": "This proposal aims to add liquid stake possibility for the TAC network. whitelist_admin_address: tac15lvhklny0khnwy7hgrxsxut6t6ku2cgknw79fr",
+        "upgraded_client_state": null
       }
-    },
-    {
-      "@type": "/tac.liquidstake.v1beta1.MsgUpdateWhitelistedValidators",
-      "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
-      "whitelisted_validators": [
-        {
-          "validator_address": "tacvaloper15lvhklny0khnwy7hgrxsxut6t6ku2cgkwu9tyt",
-          "target_weight": "10000"
-        }
-      ]
-    },
-    {
-      "@type": "/tac.liquidstake.v1beta1.MsgSetModulePaused",
-      "authority": "tac10d07y265gmmuvt4z0w9aw880jnsr700jlgpywe",
-      "is_paused": false
     },
     {
       "@type": "/cosmos.evm.vm.v1.MsgUpdateParams",
@@ -90,9 +71,9 @@
       }
     }
   ],
-  "metadata": "<url/to/metadata>",
+  "metadata": "https://github.com/TacBuild/tacchain/pull/61",
   "deposit": "1000000000000000000utac",
-  "title": "Update Liquidstake params",
-  "summary": "Liquidstake params",
+  "title": "Add liquid staking functionality to TAC network",
+  "summary": "The main liquid stake module is compatible with the existing staking and ERC-20 modules of the TAC node, introducing liquid staking tokens (gTAC) that are automatically represented as ERC-20 assets. The second module expands the capabilities of liquid staking and allows users to transfer staked funds to LST bypassing an unbound staking period",
   "expedited": false
 }
